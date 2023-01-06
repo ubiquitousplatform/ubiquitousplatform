@@ -4,12 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>ubiquitous.auth</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Extism.Sdk" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Extism.Sdk" Version="0.2.0" />
-  </ItemGroup>
 </Project>
