@@ -4,7 +4,7 @@ interface IExecutionContext
 {
     public ExecutionContextType ExecutionContextType { get; }
     public Task StartupAsync();
-    public Task HandleEventAsync(ExecutionEvent evt);
+    public Task<string> HandleEventAsync(ExecutionEvent evt);
     public Task ShutdownAsync();
     public bool ReserveContext();
     public void ReleaseContext();

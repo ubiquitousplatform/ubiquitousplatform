@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Extism.Sdk" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Extism.Sdk" Version="0.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="count_vowels.wasm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ubiquitous.functions\ubiquitous.functions.csproj" />
+  </ItemGroup>
+</Project>

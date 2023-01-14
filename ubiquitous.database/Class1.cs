@@ -4,9 +4,9 @@ public static class UbiquitousDataSettings
 {
     public static string ReservedNamespaces = "ubiq.";
 }
-public class IData
+public interface IData
 {
 
-    public class GetItem();
+    public void GetIDataItem();
 }
 
