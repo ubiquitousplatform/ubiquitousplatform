@@ -35,13 +35,13 @@ synchronousSw.Stop();
 // Test Parallel Invocations
 var asyncSw = Stopwatch.StartNew();
 // Create a bogus array of x items to use for Parallel.ForEach.
-var bogusItems = new int[iterations];
+var iterArray = new int[iterations];
 for (int i = 0; i < iterations; i++)
 {
-    bogusItems[i] = i;
+    iterArray[i] = i;
 }
 
-await Task.Run(() => Parallel.ForEach(bogusItems, (i) =>
+await Task.Run(() => Parallel.ForEach(iterArray, (i) =>
         {
             var sw = Stopwatch.StartNew();
             var output = pool.ExecuteFunction("a", "b").Result;
