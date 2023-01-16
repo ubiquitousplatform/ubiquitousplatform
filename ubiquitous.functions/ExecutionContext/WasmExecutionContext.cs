@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ubiquitous.functions;
 
-internal class WasmExecutionContext : IExecutionContext, IAsyncDisposable
+public class WasmExecutionContext : IExecutionContext, IAsyncDisposable
 {
     public ExecutionContextType ExecutionContextType { get; private set; }
 
@@ -63,11 +63,11 @@ internal class WasmExecutionContext : IExecutionContext, IAsyncDisposable
     {
         using Extism.Sdk.Native.Context context = new Extism.Sdk.Native.Context();
         using var plugin = context.CreatePlugin(_source, withWasi: false);
-        // TODO: call HTTP endpoint to test out http.  also test out websockets, etc.
+        //TODO: call HTTP endpoint to test out http.also test out websockets, etc.
 
-        var output = Encoding.UTF8.GetString(
-            plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"))
-        );
+       var output = Encoding.UTF8.GetString(
+           plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"))
+       );
 
         this.ReleaseContext();
         return output;
