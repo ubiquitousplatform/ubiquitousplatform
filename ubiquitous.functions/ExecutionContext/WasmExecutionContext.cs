@@ -61,6 +61,7 @@ public class WasmExecutionContext : IExecutionContext, IAsyncDisposable
 
     public async Task<string> HandleEventAsync(ExecutionEvent evt)
     {
+        // TODO: save the context and plugin on this object, and release them when disposed, so we can reuse the plugin and context.
         using Extism.Sdk.Native.Context context = new Extism.Sdk.Native.Context();
         using var plugin = context.CreatePlugin(_source, withWasi: false);
         //TODO: call HTTP endpoint to test out http.also test out websockets, etc.
