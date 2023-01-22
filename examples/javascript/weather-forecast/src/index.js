@@ -1,3 +1,5 @@
+import { withExtism } from "./withExtism";
+
 const summaries = [
   "Freezing",
   "Bracing",
@@ -35,21 +37,6 @@ const getForecast = (forecastCount) => {
     });
   }
   return results;
-};
-
-const withExtism = (func) => {
-  try {
-    input = JSON.parse(Host.inputString());
-  } catch (e) {
-    console.error(
-      "\nERROR: Function input not JSON formatted, unable to parse!",
-      e
-    );
-    return -1;
-  }
-  const resp = func(...input);
-  Host.outputString(JSON.stringify(resp));
-  return 0;
 };
 
 const countParameters = (a, b, c, d, e, f, g, h, i, j, k) => {
