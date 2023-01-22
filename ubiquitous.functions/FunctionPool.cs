@@ -1,9 +1,20 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
 
 namespace ubiquitous.functions
 {
 
+    public record FunctionBundle
+    {
+        public string FunctionName;
+        public string Version; // TODO: ULID
+        public byte[] Code;
+        public byte[] Sha256;
+
+    }
     public class FunctionPool
     {
         public async void AddFunctionDefinition(string functionName, string version)
@@ -17,11 +28,43 @@ namespace ubiquitous.functions
 
         }
 
-        public async Task<string> ExecuteFunction(string functionName, string version)
+
+        ConcurrentDictionary<string, FunctionBundle> _functionBundleCache = new ConcurrentDictionary<string, FunctionBundle>();
+        // Store Function code in cache.  If it exists in cache, then just use it directly.
+        public async Task<FunctionBundle> GetFunctionBundleAsync(string functionName, string version)
         {
-            // TODO: lookup function name/version in cache and load function source from storage
-            var functionSource = await File.ReadAllBytesAsync("count_vowels.wasm");
-            var context = await GetExecutionContextAsync(functionSource);
+            var cacheKey = $"{functionName}-{version}";
+            // TODO: use ubiquitous.storage to load function.
+            if (!_functionBundleCache.TryGetValue(cacheKey, out var bundle))
+            {
+                using (SHA256 mySHA256 = SHA256.Create())
+                {
+
+                    // This is kinda inefficient since it reads file twice but we're going to reimplement this on top of ubiquitous.storage anyway.
+                    var functionSource = await File.ReadAllBytesAsync("count_vowels.wasm");
+                    var fileStream = File.OpenRead("count_vowels.wasm");
+                    FunctionBundle newBundle = new()
+                    {
+                        FunctionName = functionName,
+                        Version = version,
+                        Sha256 = await mySHA256.ComputeHashAsync(fileStream),
+                        Code = functionSource
+                    };
+                    _functionBundleCache.TryAdd(cacheKey, newBundle);
+                    return newBundle;
+                }
+            }
+            return bundle;
+            
+        }
+
+        public async Task<string> ExecuteFunction(string functionName, string version)
+        { 
+            var bundle = await GetFunctionBundleAsync(functionName, version);
+            // TODO: use the SHA256 as a key into the contexts, so a change in the code results in a new pool item.
+            // TODO: eventually the SHA256 of the code will just be 1 piece of the context caching - env vars will need to be used too, etc. account for this.
+            // TODO: periodically expire old contexts, track how often they were invoked and scale them down if no longer in use.
+            var context = await GetExecutionContextAsync(bundle.Code);
             return await context.HandleEventAsync(new ExecutionEvent());
         }
 

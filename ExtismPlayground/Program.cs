@@ -1,46 +1,58 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Text;
 using ubiquitous.functions;
 
-var source = await File.ReadAllBytesAsync("count_vowels.wasm");
-
-for (int i = 0; i < 100; i++)
-{
-    Console.WriteLine($"Auto-dispose iteration {i}");
-    using Extism.Sdk.Native.Context context = new Extism.Sdk.Native.Context();
-    using var plugin = context.CreatePlugin(source, withWasi: false);
-    // TODO: call HTTP endpoint to test out http.  also test out websockets, etc.
-
-    var output = Encoding.UTF8.GetString(
-        plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"))
-    );
-    Console.WriteLine(output);
-}
-
-
-for (int i = 0; i < 100; i++)
-{
-    Console.WriteLine($"No using iteration {i}");
-    Extism.Sdk.Native.Context context = new Extism.Sdk.Native.Context();
-    var plugin = context.CreatePlugin(source, withWasi: false);
-    // TODO: call HTTP endpoint to test out http.  also test out websockets, etc.
-
-    var output = Encoding.UTF8.GetString(
-        plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"))
-    );
-    Console.WriteLine(output);
-}
+// var source = await File.ReadAllBytesAsync("count_vowels.wasm");
 
 FunctionPool pool = new FunctionPool();
 
-for (int i = 0; i < 100; i++)
+var iterations = 1000;
+
+// Warm up function pool before measuring
+
+await pool.ExecuteFunction("a", "b");
+await pool.ExecuteFunction("a", "b");
+await pool.ExecuteFunction("a", "b");
+
+// Test Serial Invocations
+var synchronousSw = Stopwatch.StartNew();
+for (int i = 0; i < iterations; i++)
 {
-    Console.WriteLine($"FunctionPool iteration {i}");
+    var sw = Stopwatch.StartNew();
     var output = await pool.ExecuteFunction("a", "b");
-    Console.WriteLine(output);
+    if (output != "{\"count\": 3}")
+    {
+        throw new ArgumentException($"unexpected output {output} on iteration {i}");
+    }
+    Console.WriteLine($"Synchronous FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
+
+}
+synchronousSw.Stop();
+
+// Test Parallel Invocations
+var asyncSw = Stopwatch.StartNew();
+// Create a bogus array of x items to use for Parallel.ForEach.
+var iterArray = new int[iterations];
+for (int i = 0; i < iterations; i++)
+{
+    iterArray[i] = i;
 }
 
+await Task.Run(() => Parallel.ForEach(iterArray, (i) =>
+        {
+            var sw = Stopwatch.StartNew();
+            var output = pool.ExecuteFunction("a", "b").Result;
+            if (output != "{\"count\": 3}")
+            {
+                throw new ArgumentException($"unexpected output {output} on iteration {i}");
+            }
+            Console.WriteLine($"Async FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
+        }));
 
-var a = "hi";
+Console.WriteLine($"Synchronous FunctionPool testing completed in {synchronousSw.ElapsedMilliseconds} ms");
+Console.WriteLine($"Parallel FunctionPool testing completed in {asyncSw.ElapsedMilliseconds} ms");
+// var a = "hi";
 
