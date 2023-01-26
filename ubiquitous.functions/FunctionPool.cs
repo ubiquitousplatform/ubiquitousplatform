@@ -7,17 +7,26 @@ using System.Security.Cryptography;
 namespace ubiquitous.functions
 {
 
+    public record FunctionDefinition
+    {
+        string? functionName;
+        string? version;
+        int minContexts = 0;
+        int maxContexts = 10;
+        int overprovisionTargetPercentage = 20;
+    }
+
     public record FunctionBundle
     {
-        public string FunctionName;
-        public string Version; // TODO: ULID
-        public byte[] Code;
-        public byte[] Sha256;
+        public string? FunctionName;
+        public string? Version; // TODO: ULID
+        public byte[]? Code;
+        public byte[]? Sha256;
 
     }
     public class FunctionPool
     {
-        public async void AddFunctionDefinition(string functionName, string version)
+        public async void AddFunctionDefinition()
         {
 
         }
@@ -41,8 +50,8 @@ namespace ubiquitous.functions
                 {
 
                     // This is kinda inefficient since it reads file twice but we're going to reimplement this on top of ubiquitous.storage anyway.
-                    var functionSource = await File.ReadAllBytesAsync("count_vowels.wasm");
-                    var fileStream = File.OpenRead("count_vowels.wasm");
+                    var functionSource = await File.ReadAllBytesAsync("count_vowels_js.wasm");
+                    var fileStream = File.OpenRead("count_vowels_js.wasm");
                     FunctionBundle newBundle = new()
                     {
                         FunctionName = functionName,
@@ -61,6 +70,7 @@ namespace ubiquitous.functions
         public async Task<string> ExecuteFunction(string functionName, string version)
         { 
             var bundle = await GetFunctionBundleAsync(functionName, version);
+            if (bundle == null) throw new Exception("Unable to retrieve function bundle code.");
             // TODO: use the SHA256 as a key into the contexts, so a change in the code results in a new pool item.
             // TODO: eventually the SHA256 of the code will just be 1 piece of the context caching - env vars will need to be used too, etc. account for this.
             // TODO: periodically expire old contexts, track how often they were invoked and scale them down if no longer in use.
