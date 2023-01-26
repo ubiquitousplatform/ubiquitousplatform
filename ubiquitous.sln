@@ -1,29 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1704.2
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous", "ubiquitous\ubiquitous.csproj", "{54F05E1F-E188-4DCA-926B-F5D6BF5EEBE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous", "ubiquitous\ubiquitous.csproj", "{54F05E1F-E188-4DCA-926B-F5D6BF5EEBE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.functions", "ubiquitous.functions\ubiquitous.functions.csproj", "{54AF1E49-5D58-4499-9014-CF08CCBA4870}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.functions", "ubiquitous.functions\ubiquitous.functions.csproj", "{54AF1E49-5D58-4499-9014-CF08CCBA4870}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.files", "ubiquitous.storage\ubiquitous.files.csproj", "{6EA9301C-0113-4F18-8C61-F11AA88AE803}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.files", "ubiquitous.storage\ubiquitous.files.csproj", "{6EA9301C-0113-4F18-8C61-F11AA88AE803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.events", "ubiquitous.events\ubiquitous.events.csproj", "{38FCDC70-94F5-411D-B837-020A2DFF3BF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.events", "ubiquitous.events\ubiquitous.events.csproj", "{38FCDC70-94F5-411D-B837-020A2DFF3BF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.users", "ubiquitous.auth\ubiquitous.users.csproj", "{15F7C22A-6FB9-48C3-8EE4-5657B31CC048}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.users", "ubiquitous.auth\ubiquitous.users.csproj", "{15F7C22A-6FB9-48C3-8EE4-5657B31CC048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.data", "ubiquitous.database\ubiquitous.data.csproj", "{5AD60BF0-39FF-40D2-A09C-BF63C6972DC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.data", "ubiquitous.database\ubiquitous.data.csproj", "{5AD60BF0-39FF-40D2-A09C-BF63C6972DC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.ephemeral", "ubiquitous.ephemeral\ubiquitous.ephemeral.csproj", "{3464BFFE-DD05-434B-8B7D-0449FA56D4A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.ephemeral", "ubiquitous.ephemeral\ubiquitous.ephemeral.csproj", "{3464BFFE-DD05-434B-8B7D-0449FA56D4A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.notifications", "ubiquitous.notifications\ubiquitous.notifications.csproj", "{A91E4F82-71C4-4FE7-B890-561B95AD225B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.notifications", "ubiquitous.notifications\ubiquitous.notifications.csproj", "{A91E4F82-71C4-4FE7-B890-561B95AD225B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.files.unit.tests", "ubiquitous.files.tests\ubiquitous.files.unit.tests.csproj", "{DF1D405D-5831-472D-B11C-F881F2458EF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.files.unit.tests", "ubiquitous.files.tests\ubiquitous.files.unit.tests.csproj", "{DF1D405D-5831-472D-B11C-F881F2458EF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.data.unit.tests", "ubiquitous.data.unit.tests\ubiquitous.data.unit.tests.csproj", "{927FA60D-382D-4917-B67D-07D89CE0F451}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.data.unit.tests", "ubiquitous.data.unit.tests\ubiquitous.data.unit.tests.csproj", "{927FA60D-382D-4917-B67D-07D89CE0F451}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtismPlayground", "ExtismPlayground\ExtismPlayground.csproj", "{2F14E180-B058-4714-A620-8D5CD99FFBF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtismPlayground", "ExtismPlayground\ExtismPlayground.csproj", "{2F14E180-B058-4714-A620-8D5CD99FFBF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.config", "ubiquitous.config\ubiquitous.config.csproj", "{6FF4EFE9-FD2F-47C7-96F2-826127088671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{2F14E180-B058-4714-A620-8D5CD99FFBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F14E180-B058-4714-A620-8D5CD99FFBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F14E180-B058-4714-A620-8D5CD99FFBF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FF4EFE9-FD2F-47C7-96F2-826127088671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FF4EFE9-FD2F-47C7-96F2-826127088671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FF4EFE9-FD2F-47C7-96F2-826127088671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FF4EFE9-FD2F-47C7-96F2-826127088671}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
