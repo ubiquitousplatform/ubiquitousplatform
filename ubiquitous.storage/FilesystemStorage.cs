@@ -7,10 +7,6 @@ public interface IStorage
 
 }
 
-public interface IDatabase
-{
-    public void RegisterSchema();
-}
 
 public class FilesystemStorage : IStorage
 {
