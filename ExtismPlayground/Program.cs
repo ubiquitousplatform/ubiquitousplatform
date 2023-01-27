@@ -9,7 +9,7 @@ using ubiquitous.functions;
 
 FunctionPool pool = new FunctionPool();
 
-var iterations = 1000;
+var iterations = 10000000;
 
 // Warm up function pool before measuring
 
@@ -33,7 +33,6 @@ for (int i = 0; i < iterations; i++)
 synchronousSw.Stop();
 
 // Test Parallel Invocations
-var asyncSw = Stopwatch.StartNew();
 // Create a bogus array of x items to use for Parallel.ForEach.
 var iterArray = new int[iterations];
 for (int i = 0; i < iterations; i++)
@@ -43,15 +42,26 @@ for (int i = 0; i < iterations; i++)
 
 await Task.Run(() => Parallel.ForEach(iterArray, (i) =>
         {
-            var sw = Stopwatch.StartNew();
+            //var sw = Stopwatch.StartNew();
             var output = pool.ExecuteFunction("a", "b").Result;
             if (output != "{\"count\": 3}")
             {
                 throw new ArgumentException($"unexpected output {output} on iteration {i}");
             }
-            Console.WriteLine($"Async FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
+            //Console.WriteLine($"Async FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
         }));
 
+var asyncSw = Stopwatch.StartNew();
+await Task.Run(() => Parallel.ForEach(iterArray, (i) =>
+{
+   // var sw = Stopwatch.StartNew();
+    var output = pool.ExecuteFunction("a", "b").Result;
+    if (output != "{\"count\": 3}")
+    {
+        throw new ArgumentException($"unexpected output {output} on iteration {i}");
+    }
+    //Console.WriteLine($"Async FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
+}));
 Console.WriteLine($"Synchronous FunctionPool testing completed in {synchronousSw.ElapsedMilliseconds} ms");
 Console.WriteLine($"Parallel FunctionPool testing completed in {asyncSw.ElapsedMilliseconds} ms");
 // var a = "hi";
