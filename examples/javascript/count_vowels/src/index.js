@@ -11,4 +11,5 @@ export const count_vowels = () => {
     }
   }
   Host.outputString(JSON.stringify({ count: vowelCount }));
+  return 0;
 };

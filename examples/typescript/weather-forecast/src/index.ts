@@ -59,12 +59,12 @@ const countParameters = (
   return { argumentCount: params.length };
 };
 
-export const getParameterCount = () => withExtism(countParameters);
-export const getWeatherForecast = () => withExtism(getForecast);
-
-export const reverseByteArray = () => {
+export const uppercaseAsBytes = () => {
   const input = Host.inputBytes();
-  Host.outputString(JSON.stringify(input));
+  var enc = new TextDecoder("utf-8");
+
+  const result = enc.decode(input);
+  Host.outputString(result.toLocaleUpperCase());
   // input.reverse();
   // Host.outputBytes(input);
 };
@@ -74,3 +74,66 @@ export const getSetVar = () => {
   const resp = Var.get("testString");
   Host.outputString(JSON.stringify(resp));
 };
+
+const vowels = ["a", "e", "i", "o", "u", "y"];
+export const count_vowels = () => {
+  const input = Host.inputString();
+  let vowelCount = 0;
+  for (var i = 0; i < input.length; i++) {
+    for (var j = 0; j < vowels.length; j++) {
+      if (input.charAt(i) === vowels[j]) {
+        vowelCount += 1;
+        break;
+      }
+    }
+  }
+  Host.outputString(JSON.stringify({ count: vowelCount }));
+};
+
+/* 
+//this doesn't work because top level async doesn't work in quickjs yet
+function timeoutPromise(time) {
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve(true);
+    }, time);
+  });
+}
+
+export const sleepMs = () => {
+  (async () => {
+    await timeoutPromise(4000);
+  })();
+};
+
+export const sleepMsAsync = async () => {
+  //const input = Host.inputString();
+  await timeoutPromise(4000);
+  Host.outputString("Slept");
+};
+
+export const sleep_ms = async (milliseconds: number) => {
+  if (!milliseconds) {
+    milliseconds = 10000;
+  }
+
+  await new Promise((r) => setTimeout(r, milliseconds));
+};
+
+// export const sleepMs = () => withExtism(sleep_ms);
+
+*/
+
+export const sleep_ms = (milliseconds: number) => {
+  if (!milliseconds) {
+    milliseconds = 10000;
+  }
+  var startTime = Date.now();
+  while (Date.now() - startTime < milliseconds) {
+    continue;
+  }
+};
+
+export const sleepMs = () => withExtism(sleep_ms);
+export const getParameterCount = () => withExtism(countParameters);
+export const getWeatherForecast = () => withExtism(getForecast);

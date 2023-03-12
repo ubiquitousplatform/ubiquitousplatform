@@ -1,11 +1,11 @@
 declare namespace Host {
-  const inputBytes: () => number[];
+  const inputBytes: () => ArrayBuffer;
   const inputString: () => string;
-  const outputBytes: (bytes: number[]) => boolean;
+  const outputBytes: (bytes: ArrayBuffer) => boolean;
   const outputString: (str: string) => boolean;
 }
 
 declare namespace Var {
-  const set: (varName: string, data: string | number[]) => void;
-  const get: (varName: string) => number[];
+  const set: (varName: string, data: string | ArrayBuffer) => void;
+  const get: (varName: string) => ArrayBuffer;
 }
