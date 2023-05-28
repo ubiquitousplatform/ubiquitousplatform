@@ -9,13 +9,13 @@ using ubiquitous.functions;
 
 FunctionPool pool = new FunctionPool();
 
-var iterations = 10000000;
+var iterations = 1000;
 
 // Warm up function pool before measuring
 
-await pool.ExecuteFunction("a", "b");
-await pool.ExecuteFunction("a", "b");
-await pool.ExecuteFunction("a", "b");
+//await pool.ExecuteFunction("a", "b");
+//await pool.ExecuteFunction("a", "b");
+//await pool.ExecuteFunction("a", "b");
 
 // Test Serial Invocations
 var synchronousSw = Stopwatch.StartNew();
@@ -23,7 +23,7 @@ for (int i = 0; i < iterations; i++)
 {
     var sw = Stopwatch.StartNew();
     var output = await pool.ExecuteFunction("a", "b");
-    if (output != "{\"count\": 3}")
+    if (output.Replace(" ", string.Empty) != "{\"count\":3}")
     {
         throw new ArgumentException($"unexpected output {output} on iteration {i}");
     }

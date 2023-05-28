@@ -6,6 +6,7 @@ namespace ubiquitous.storage
         public string StorageId;
         public string Filename;
         public string Path;
+        public string 
 
         public Metadata()
         {
