@@ -48,31 +48,40 @@ var inputExample = new Input() { name = "hey", num = 5 };
 
 var inputAsString = System.Text.Json.JsonSerializer.Serialize(inputExample);
 
+
+
+
 Console.WriteLine("inputAsString: " + inputAsString);
 
+/*
+fn get_response_size() -> i32;// fn get_input_size() -> i32;
+fn get_response(ptr: i32);// fn get_input(ptr: i32);
+fn invoke(ptr: i32, size: i32, format: i32);// fn set_output(ptr: i32, size: i32);
+*/
+
 linker.Define(
-    "host",
+    "ubiquitous_functions",
     "get_input_size",
     Function.FromCallback(store, () => Encoding.ASCII.GetByteCount(inputAsString))
 );
 linker.Define(
-    "host",
+    "ubiquitous_functions",
     "get_input",
     // GetInput has a preallocated memory size based on calling get_input_size, and it expects us to write to it
     Function.FromCallback(store, (Caller caller, int ptr) =>
     {
-        Console.WriteLine($"Called get_input with value: ${ptr}");
+        Console.WriteLine($"Called get_input with value: {ptr}");
         //caller!.GetMemory("memory")!.WriteByte(ptr, System.Text.Encoding.ASCII.GetBytes(inputAsString)[0]);
         caller!.GetMemory("memory")!.WriteString(ptr, inputAsString, System.Text.Encoding.ASCII);
     })
 );
 
 linker.Define(
-    "host",
-    "set_output",
+    "ubiquitous_functions",
+    "invoke_json",
     Function.FromCallback(store, (Caller caller, int ptr, int size) =>
     {
-        Console.WriteLine("Received response from WASM module:");
+        Console.WriteLine("Called method:");
         Console.WriteLine(caller.GetMemory("memory")!.ReadString(ptr, size));
     })
 );
