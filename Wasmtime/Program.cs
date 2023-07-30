@@ -32,7 +32,8 @@ store.SetWasiConfiguration(new WasiConfiguration().WithEnvironmentVariables(new 
 
 
 
-using var module = Module.FromFile(engine, "wasi-data-sharing.wasm");
+//using var module = Module.FromFile(engine, "wasi-data-sharing.wasm");
+using var module = Module.FromFile(engine, "javy-example.wasm");
 
 // how do we do stdin/stdout/stderr? we can inherit them but then that seems unsafe, if we don't inherit can we use the file version safely?
 
@@ -44,14 +45,14 @@ fn set_output(ptr: i32, size: i32);*/
 Instance instance = null;
 
 
-var inputExample = new Input() { name = "hey", num = 5 };
+var responseExample = new Response() { ok = true, type = "LogResponse", payload = new LogResponse() { something = new() { "a", "b", "c" } } };
 
-var inputAsString = System.Text.Json.JsonSerializer.Serialize(inputExample);
-
-
+var responseAsString = System.Text.Json.JsonSerializer.Serialize(responseExample);
 
 
-Console.WriteLine("inputAsString: " + inputAsString);
+
+
+//Console.WriteLine("inputAsString: " + responseAsString);
 
 /*
 fn get_response_size() -> i32;// fn get_input_size() -> i32;
@@ -61,18 +62,18 @@ fn invoke(ptr: i32, size: i32, format: i32);// fn set_output(ptr: i32, size: i32
 
 linker.Define(
     "ubiquitous_functions",
-    "get_input_size",
-    Function.FromCallback(store, () => Encoding.ASCII.GetByteCount(inputAsString))
+    "get_response_size",
+    Function.FromCallback(store, () => Encoding.ASCII.GetByteCount(responseAsString))
 );
 linker.Define(
     "ubiquitous_functions",
-    "get_input",
+    "get_response",
     // GetInput has a preallocated memory size based on calling get_input_size, and it expects us to write to it
     Function.FromCallback(store, (Caller caller, int ptr) =>
     {
-        Console.WriteLine($"Called get_input with value: {ptr}");
+        Console.WriteLine($"Called get_response with value: {ptr}");
         //caller!.GetMemory("memory")!.WriteByte(ptr, System.Text.Encoding.ASCII.GetBytes(inputAsString)[0]);
-        caller!.GetMemory("memory")!.WriteString(ptr, inputAsString, System.Text.Encoding.ASCII);
+        caller!.GetMemory("memory")!.WriteString(ptr, responseAsString, System.Text.Encoding.ASCII);
     })
 );
 
@@ -81,15 +82,19 @@ linker.Define(
     "invoke_json",
     Function.FromCallback(store, (Caller caller, int ptr, int size) =>
     {
-        Console.WriteLine("Called method:");
-        Console.WriteLine(caller.GetMemory("memory")!.ReadString(ptr, size));
+        var input = caller!.GetMemory("memory")!.ReadString(ptr, size);
+       
     })
 );
 
-instance = linker.Instantiate(store, module);
-//Console.WriteLine("Exports:");
-//module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
-var run = instance.GetAction("_start")!;
-run();
+for (int i = 0; i < 1; i++)
+{
+    instance = linker.Instantiate(store, module);
+    //Console.WriteLine("Exports:");
+    //module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
+    var run = instance.GetAction("_start")!;
+    
+    run();
+}
 
-
+Console.WriteLine("Done");
