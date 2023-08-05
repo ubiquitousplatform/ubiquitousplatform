@@ -63,7 +63,8 @@ fn invoke(ptr: i32, size: i32, format: i32);// fn set_output(ptr: i32, size: i32
 linker.Define(
     "ubiquitous_functions",
     "get_response_size",
-    Function.FromCallback(store, () => Encoding.ASCII.GetByteCount(responseAsString))
+    Function.FromCallback(store, () => 
+    Encoding.ASCII.GetByteCount(responseAsString))
 );
 linker.Define(
     "ubiquitous_functions",
@@ -83,6 +84,7 @@ linker.Define(
     Function.FromCallback(store, (Caller caller, int ptr, int size) =>
     {
         var input = caller!.GetMemory("memory")!.ReadString(ptr, size);
+        // TODO: all calls must require an ID so that we can properly trace the context? or do we track the ID of the instance automatically?
        
     })
 );
@@ -90,11 +92,17 @@ linker.Define(
 for (int i = 0; i < 1; i++)
 {
     instance = linker.Instantiate(store, module);
+
     //Console.WriteLine("Exports:");
     //module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
     var run = instance.GetAction("_start")!;
     
     run();
+
+    // TODO: call a specific method for "_initialize"
+
+    // TODO: call a specific method for "_
+
 }
 
 Console.WriteLine("Done");

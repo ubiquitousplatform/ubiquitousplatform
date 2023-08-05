@@ -50,8 +50,8 @@ namespace ubiquitous.functions
                 {
 
                     // This is kinda inefficient since it reads file twice but we're going to reimplement this on top of ubiquitous.storage anyway.
-                    var functionSource = await File.ReadAllBytesAsync("count_vowels_js.wasm");
-                    var fileStream = File.OpenRead("count_vowels_js.wasm");
+                    var functionSource = await File.ReadAllBytesAsync("javy-example.wasm");
+                    var fileStream = File.OpenRead("javy-example.wasm");
                     FunctionBundle newBundle = new()
                     {
                         FunctionName = functionName,
