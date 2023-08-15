@@ -104,12 +104,15 @@ linker.Define(
         Console.WriteLine($"Called invoke_json with value: {input}");
         Console.WriteLine($"Requesting WASM module to allocate {utf8Bytes.Length} bytes (+ 4 byte size header) in guest memory space for storing response...");
         var guest_malloc = caller.GetFunction("ubiquitous_functions_guest_malloc");
+        Console.WriteLine("Invoking guest_malloc...");
         int mem_loc = (int)guest_malloc.Invoke(utf8Bytes.Length + 4);
+        Console.WriteLine($"Guest malloc returned {mem_loc}");
         // Call WriteByte with each piece of the int32
-        caller!.GetMemory("memory")!.WriteByte(mem_loc, (byte)(utf8Bytes.Length >> 24));
-        caller!.GetMemory("memory")!.WriteByte(mem_loc, (byte)(utf8Bytes.Length >> 16));
-        caller!.GetMemory("memory")!.WriteByte(mem_loc, (byte)(utf8Bytes.Length >> 8));
-        caller!.GetMemory("memory")!.WriteByte(mem_loc, (byte)(utf8Bytes.Length >> 0));
+        caller!.GetMemory("memory")!.WriteInt32(mem_loc, utf8Bytes.Length);
+        /*caller!.GetMemory("memory")!.Write(mem_loc, (byte)(utf8Bytes.Length >> 24));
+        caller!.GetMemory("memory")!.WriteByte(mem_loc + 1, (byte)(utf8Bytes.Length >> 16));
+        caller!.GetMemory("memory")!.WriteByte(mem_loc + 2, (byte)(utf8Bytes.Length >> 8));
+        caller!.GetMemory("memory")!.WriteByte(mem_loc + 3, (byte)(utf8Bytes.Length >> 0));*/
         caller!.GetMemory("memory")!.WriteString(mem_loc + 4, responseAsString, Encoding.UTF8);
         // https://stackoverflow.com/questions/39550856/what-is-the-right-way-to-allocate-data-to-pass-to-an-ffi-call might be relevant.
         //caller.ConsumeFuel(1000);
