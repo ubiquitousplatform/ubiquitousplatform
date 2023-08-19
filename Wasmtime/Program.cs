@@ -116,18 +116,18 @@ for (int i = 0; i < iterations; i++)
     linker.DefineInstance(store, "javy_quickjs_provider_v1", quickjs_instance);
     
     instance = linker.Instantiate(store, module);
-    /*var js_user_code_instance = linker.Instantiate(store, module);
+    var js_user_code_instance = linker.Instantiate(store, module);
     linker.DefineInstance(store, "js_user_code_instance", js_user_code_instance);
     //Console.WriteLine("HOST: Exports:");
     Console.WriteLine("HOST: instanceSw: " + instanceSw.Elapsed);
-    var run = linker.Get(store, "js_user_code_instance", "_start")!;*/
-    var run = instance.GetAction("_start")!;
+    var startFn = linker.GetFunction(store, "js_user_code_instance", "_start")!;
+    // var run = instance.GetAction("_start")!;
     var runSw = Stopwatch.StartNew();
     //module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
     //engine.IncrementEpoch();
     try
     {
-        run();
+        startFn.Invoke();
     }
     catch (TrapException e)
     {
@@ -138,11 +138,20 @@ for (int i = 0; i < iterations; i++)
     {
         Console.WriteLine("HOST: Exception: " + e);
     }
+    // Lifecycle should be: register module (and check constraints during registration such as only 1 memory export total), store memory exports for each module, as well as function exports
+    // then instantiate the instances, start a stopwatch, opt function into Epoch tracking, run function, then at the end calculate memory usage and epoch usage.
     Console.WriteLine("HOST: runsw: " + runSw.Elapsed);
-    
+    Console.WriteLine("Imports for js_user_code_instance:");
+    module.Imports.ToList().ForEach(e => Console.WriteLine($"{e.ModuleName}::{e.Name} ({e.GetType()})"));
+    Console.WriteLine("Exports for js_user_code_instance:");
+    module.Exports.ToList().ForEach(e => Console.WriteLine($"{e.Name} ({e.GetType()})"));
+    Console.WriteLine("Imports for javy_quickjs_provider_v1:");
+    quickjs_provider.Imports.ToList().ForEach(e => Console.WriteLine($"{e.ModuleName}::{e.Name} ({e.GetType()})"));
+    Console.WriteLine("Exports for javy_quickjs_provider_v1:");
+    quickjs_provider.Exports.ToList().ForEach(e => Console.WriteLine($"{e.Name} ({e.GetType()})"));
     var javyMemoryUsageInBytes = linker.GetMemory(store, "javy_quickjs_provider_v1", "memory")!.GetSize() * 64 * 1024;
-    //var codeMemoryUsageInBytes = linker.GetMemory(store, "default", "memory")!.GetSize() * 64 * 1024;
-    //Console.WriteLine("HOST: Memory consumption:" + javyMemoryUsageInBytes + codeMemoryUsageInBytes);
+    //var codeMemoryUsageInBytes = linker.GetMemory(store, "js_user_code_instance", "memory")!.GetSize() * 64 * 1024;
+    Console.WriteLine("HOST: Memory consumption:" + javyMemoryUsageInBytes);
 
     // TODO: call a specific method for "_initialize"
 
