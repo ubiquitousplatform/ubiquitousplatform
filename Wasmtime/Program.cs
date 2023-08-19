@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
+﻿using System.Diagnostics;
 using System.Text;
 using Wasmtime;
 using WasmtimeExamples;
@@ -51,43 +49,9 @@ using var quickjs_provider = Module.FromFile(engine, "javy_quickjs_provider_v1.w
 
 
 
-
-
-
-//Console.WriteLine("HOST: inputAsString: " + responseAsString);
-
-/*
-fn get_response_size() -> i32;// fn get_input_size() -> i32;
-fn get_response(ptr: i32);// fn get_input(ptr: i32);
-fn invoke(ptr: i32, size: i32, format: i32);// fn set_output(ptr: i32, size: i32);
-*/
-
-/*
-linker.Define(
-    "ubiquitous_functions",
-    "get_response_size",
-    Function.FromCallback(store, () => 
-    Encoding.ASCII.GetByteCount(responseAsString))
-);
-linker.Define(
-    "ubiquitous_functions",
-    "get_response",
-    // GetInput has a preallocated memory size based on calling get_input_size, and it expects us to write to it
-    Function.FromCallback(store, (Caller caller, int ptr) =>
-    {
-        Console.WriteLine($"Called get_response with value: {ptr}");
-        
-        //caller!.GetMemory("memory")!.WriteByte(ptr, System.Text.Encoding.ASCII.GetBytes(inputAsString)[0]);
-        caller!.GetMemory("memory")!.WriteString(ptr, responseAsString, System.Text.Encoding.UTF8);
-        caller!.GetMemory("caller_response");
-    })
-);*/
-
-
-
 var start = Stopwatch.StartNew();
 
-var iterations = 1;
+var iterations = 100000;
 
 for (int i = 0; i < iterations; i++)
 {
