@@ -5,9 +5,9 @@ using System.Text;
 using Wasmtime;
 using WasmtimeExamples;
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine("HOST: Hello, World!");
 
-Console.WriteLine("Calling javy-example");
+Console.WriteLine("HOST: Calling javy-example");
 
 // Define wasmtime store and engine
 // TODO: look into Epoch and timeouts
@@ -43,6 +43,7 @@ using var engine = new Engine(new Config().WithEpochInterruption(true)); // Can 
 
 
 using var module = Module.FromFile(engine, "javy-example.wasm");
+using var quickjs_provider = Module.FromFile(engine, "javy_quickjs_provider_v1.wasm");
 
 
 // how do we do stdin/stdout/stderr? we can inherit them but then that seems unsafe, if we don't inherit can we use the file version safely?
@@ -53,7 +54,7 @@ using var module = Module.FromFile(engine, "javy-example.wasm");
 
 
 
-//Console.WriteLine("inputAsString: " + responseAsString);
+//Console.WriteLine("HOST: inputAsString: " + responseAsString);
 
 /*
 fn get_response_size() -> i32;// fn get_input_size() -> i32;
@@ -84,78 +85,65 @@ linker.Define(
 
 
 
-var iterations = 1000;
-for (int i = 0; i < iterations; i++)
-{
-
-    using var store = new Store(engine);// TODO: store can be initialized with data. how does this work? could we use this to our advantage for passing data to the wasm module?
-    store.SetWasiConfiguration(new WasiConfiguration().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "0.0.1"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
-
-    store.SetEpochDeadline((ulong)maxExecutionMs * 1000);
-
-    using var linker = new Linker(engine); // Can this linker be reused?
-    linker.DefineWasi();
-    linker.Define(
-        "ubiquitous_functions",
-        "invoke_json",
-        Function.FromCallback(store, InvokeJson())
-    );
-
-    Instance instance = null;
-
-    instance = linker.Instantiate(store, module);
-
-    //Console.WriteLine("Exports:");
-    //module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
-    var run = instance.GetAction("_start")!;
-    engine.IncrementEpoch();
-
-    run();
-
-    // TODO: call a specific method for "_initialize"
-
-    // TODO: call a specific method for "_
-
-}
-
 var start = Stopwatch.StartNew();
 
-
+var iterations = 1;
 
 for (int i = 0; i < iterations; i++)
 {
     var storeSw = Stopwatch.StartNew();
     using var store = new Store(engine);// TODO: store can be initialized with data. how does this work? could we use this to our advantage for passing data to the wasm module?
-    store.SetWasiConfiguration(new WasiConfiguration().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "0.0.1"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
+    store.SetWasiConfiguration(new WasiConfiguration().WithInheritedStandardInput().WithInheritedStandardOutput().WithInheritedStandardError().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "0.0.1"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
 
     store.SetEpochDeadline((ulong)maxExecutionMs * 1000);
 
-    Console.WriteLine("storeSw: " + storeSw.Elapsed);
+    Console.WriteLine("HOST: storeSw: " + storeSw.Elapsed);
     var linkerSw = Stopwatch.StartNew();
     using var linker = new Linker(engine); // Can this linker be reused?
-    Console.WriteLine("linkerSw: " + linkerSw.Elapsed);
+    Console.WriteLine("HOST: linkerSw: " + linkerSw.Elapsed);
     linker.DefineWasi();
-    Console.WriteLine("linkerSw: " + linkerSw.Elapsed);
+    Console.WriteLine("HOST: linkerSw: " + linkerSw.Elapsed);
     linker.Define(
         "ubiquitous_functions",
         "invoke_json",
-        Function.FromCallback(store, InvokeJson)
+        Function.FromCallback(store, InvokeJson())
     );
-    Console.WriteLine("linkerSw: " + linkerSw.Elapsed);
+    Console.WriteLine("HOST: linkerSw: " + linkerSw.Elapsed);
     
     var instanceSw = Stopwatch.StartNew();
     Instance instance = null;
-
+    var quickjs_instance = linker.Instantiate(store, quickjs_provider);
+    linker.DefineInstance(store, "javy_quickjs_provider_v1", quickjs_instance);
+    
     instance = linker.Instantiate(store, module);
-
-    //Console.WriteLine("Exports:");
-    Console.WriteLine("instanceSw: " + instanceSw.Elapsed);
-    var runSw = Stopwatch.StartNew();
+    /*var js_user_code_instance = linker.Instantiate(store, module);
+    linker.DefineInstance(store, "js_user_code_instance", js_user_code_instance);
+    //Console.WriteLine("HOST: Exports:");
+    Console.WriteLine("HOST: instanceSw: " + instanceSw.Elapsed);
+    var run = linker.Get(store, "js_user_code_instance", "_start")!;*/
     var run = instance.GetAction("_start")!;
+    var runSw = Stopwatch.StartNew();
     //module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
     //engine.IncrementEpoch();
-    run();
-    Console.WriteLine("runsw: " + runSw.Elapsed);
+    try
+    {
+        run();
+    }
+    catch (TrapException e)
+    {
+        Console.WriteLine("HOST: TrapException: " + e);
+        
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("HOST: Exception: " + e);
+    }
+    Console.WriteLine("HOST: runsw: " + runSw.Elapsed);
+    
+    var javyMemoryUsageInBytes = linker.GetMemory(store, "javy_quickjs_provider_v1", "memory")!.GetSize() * 64 * 1024;
+    //var codeMemoryUsageInBytes = linker.GetMemory(store, "default", "memory")!.GetSize() * 64 * 1024;
+    //Console.WriteLine("HOST: Memory consumption:" + javyMemoryUsageInBytes + codeMemoryUsageInBytes);
+
     // TODO: call a specific method for "_initialize"
 
     // TODO: call a specific method for "_
@@ -178,7 +166,7 @@ The Linker type is not compatible with usage between multiple Engine values. An 
 // write the elapsed time and the number of iterations
 Console.WriteLine($"Elapsed: {start.ElapsedMilliseconds}ms");
 Console.WriteLine($"Iterations: {iterations}");
-Console.WriteLine("Done");
+Console.WriteLine("HOST: Done");
 
 static CallerFunc<int, int, int> InvokeJson()
 {
@@ -189,18 +177,20 @@ static CallerFunc<int, int, int> InvokeJson()
         var responseExample = new Response() { ok = true, type = "LogResponse", payload = new LogResponse() { something = new() { "a", "b", "c" } } };
         var responseAsString = System.Text.Json.JsonSerializer.Serialize(responseExample);
         var utf8ByteLength = Encoding.UTF8.GetByteCount(responseAsString);
+        Console.WriteLine("HOST: Called invokeJson with pointer: " + ptr + " and size: " + size);
+        var bytes = Encoding.UTF8.GetString(memory.GetSpan<byte>(ptr, size));
         var input = memory.ReadString(ptr, size, Encoding.UTF8);
-        //Console.WriteLine($"Called invoke_json with value: {input}");
-        //Console.WriteLine($"Requesting WASM module to allocate {utf8ByteLength} bytes (+ 4 byte size header) in guest memory space for storing response...");
+        Console.WriteLine($"HOST: WASM module called invoke_json with value: {input}");
+        Console.WriteLine($"HOST: Requesting WASM module to allocate {utf8ByteLength} bytes (+ 4 byte size header) in guest memory space for storing response...");
         var guest_malloc = caller.GetFunction("ubiquitous_functions_guest_malloc");
         if (guest_malloc == null)
         {
-            Console.WriteLine("Failed to find guest_malloc function");
+            Console.WriteLine("HOST: Failed to find guest_malloc function");
             return -1;
         }
-        //Console.WriteLine("Invoking guest_malloc...");
+        Console.WriteLine("HOST: Invoking guest_malloc...");
         int mem_loc = (int)(guest_malloc.Invoke(utf8ByteLength + 4) ?? -1);
-        //Console.WriteLine($"Guest malloc returned {mem_loc}");
+        Console.WriteLine($"Guest malloc returned {mem_loc}");
         // Call WriteByte with each piece of the int32
         memory.WriteInt32(mem_loc, utf8ByteLength);
         memory.WriteString(mem_loc + 4, responseAsString, Encoding.UTF8);
