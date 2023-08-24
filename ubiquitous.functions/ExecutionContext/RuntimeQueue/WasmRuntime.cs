@@ -19,10 +19,11 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
         private static Dictionary<string, Module> runtimeCache = new();
 
         private readonly Engine engine;
-        private readonly Store store;
-        private readonly Linker linker;
+        public string Runtime { get; private set; }
+        private Store store;
+        private Linker linker;
         private Dictionary<string, InstantiatedModule> instantiatedModules = new();
-
+        public Guid Id { get; } = new();
         // TODO: get Engine from DI.
         public WasmRuntime(Engine engine, string runtime)
         {
@@ -36,17 +37,24 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
             }
 
             this.engine = engine;
+            this.Runtime = runtime;
 
             // Initialize our module in the cache if it's not already there.
             if (!runtimeCache.ContainsKey(runtime))
             {
                 runtimeCache[runtime] = Module.FromFile(engine, "../ubiquitous.functions/runtimes/ubiquitous_quickjs_v1.wasm");
             }
+            ResetRuntime();
+        }
+
+        public void ResetRuntime()
+        {
+            instantiatedModules.Clear();
 
             // TODO: store can be initialized with data. how does this work? could we use this to our advantage for passing data to the wasm module?
-            this.store = new Store(engine);
+            store = new Store(engine);
 
-            this.linker = new Linker(engine);
+            linker = new Linker(engine);
 
 
             // Define Wasi
@@ -60,7 +68,8 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
                 Function.FromCallback(store, InvokeJson())
             );
             // TODO: change this to 'runtime' and fix the registration of the runtime name to be 'ubiquitous_quickjs_v1' instead of 'javy_quickjs_provider_v1'
-            InstantiateModule("javy_quickjs_provider_v1", runtimeCache[runtime]);
+            InstantiateModule("javy_quickjs_provider_v1", runtimeCache[Runtime]);
+            _functionLoaded = false;
         }
 
         private void InstantiateModule(string wasmNamespace, Module module)
