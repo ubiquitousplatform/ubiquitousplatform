@@ -23,7 +23,7 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
         private Store store;
         private Linker linker;
         private Dictionary<string, InstantiatedModule> instantiatedModules = new();
-        public Guid Id { get; } = new();
+        public Guid Id { get; } = Guid.NewGuid();
         // TODO: get Engine from DI.
         public WasmRuntime(Engine engine, string runtime)
         {
@@ -140,10 +140,10 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
             {
                 Memory memory = caller!.GetMemory("memory");
 
-                Console.WriteLine("HOST: Called invokeJson with pointer: " + ptr + " and size: " + size);
+                //Console.WriteLine("HOST: Called invokeJson with pointer: " + ptr + " and size: " + size);
                 string bytes = Encoding.UTF8.GetString(memory.GetSpan<byte>(ptr, size));
                 string input = memory.ReadString(ptr, size, Encoding.UTF8);
-                Console.WriteLine($"HOST: WASM module called invoke_json with value: {input}");
+                //Console.WriteLine($"HOST: WASM module called invoke_json with value: {input}");
 
                 // Dispatch to handler system and get back response...
 
@@ -154,16 +154,16 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
                 int utf8ByteLength = Encoding.UTF8.GetByteCount(responseAsString);
 
 
-                Console.WriteLine($"HOST: Requesting WASM module to allocate {utf8ByteLength} bytes (+ 4 byte size header) in guest memory space for storing response...");
+                //Console.WriteLine($"HOST: Requesting WASM module to allocate {utf8ByteLength} bytes (+ 4 byte size header) in guest memory space for storing response...");
                 Function guest_malloc = caller.GetFunction("ubiquitous_functions_guest_malloc");
                 if (guest_malloc == null)
                 {
                     Console.WriteLine("HOST: Failed to find guest_malloc function");
                     return -1;
                 }
-                Console.WriteLine("HOST: Invoking guest_malloc...");
+                //Console.WriteLine("HOST: Invoking guest_malloc...");
                 int mem_loc = (int)(guest_malloc.Invoke(utf8ByteLength + 4) ?? -1);
-                Console.WriteLine($"Guest malloc returned {mem_loc}");
+                //Console.WriteLine($"HOST: Guest malloc returned {mem_loc}");
                 // Call WriteByte with each piece of the int32
                 memory.WriteInt32(mem_loc, utf8ByteLength);
                 memory.WriteString(mem_loc + 4, responseAsString, Encoding.UTF8);
