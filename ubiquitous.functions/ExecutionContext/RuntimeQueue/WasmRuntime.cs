@@ -58,19 +58,22 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
 
 
             // Define Wasi
-            store.SetWasiConfiguration(new WasiConfiguration().WithInheritedStandardInput().WithInheritedStandardOutput().WithInheritedStandardError().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
+            //store.SetWasiConfiguration(new WasiConfiguration().WithInheritedStandardInput().WithInheritedStandardOutput().WithInheritedStandardError().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
+            store.SetWasiConfiguration(new WasiConfiguration().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
             linker.DefineWasi();
 
             // Add custom invoke_json hook that allows IPC from the guest to the host.
             linker.Define(
                 "ubiquitous_functions",
                 "invoke_json",
-                Function.FromCallback(store, InvokeJson())
+                Function.FromCallback(store, _invokeJsonCallback)
             );
             // TODO: change this to 'runtime' and fix the registration of the runtime name to be 'ubiquitous_quickjs_v1' instead of 'javy_quickjs_provider_v1'
             InstantiateModule("javy_quickjs_provider_v1", runtimeCache[Runtime]);
             _functionLoaded = false;
         }
+
+        private static CallerFunc<int, int, int> _invokeJsonCallback = InvokeJson();
 
         private void InstantiateModule(string wasmNamespace, Module module)
         {
