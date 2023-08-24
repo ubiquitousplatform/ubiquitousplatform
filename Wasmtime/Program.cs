@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using ubiquitous.functions.ExecutionContext.RuntimeQueue;
 using Wasmtime;
 using WasmtimeExamples;
 
@@ -25,6 +26,28 @@ System.Environment.SetEnvironmentVariable("WASMTIME_BACKTRACE_DETAILS", "1");
 
 var maxExecutionMs = 2500;
 
+
+
+
+/*
+var js_runtime = "uqibuitous_js_v1";
+var functionPool = new FunctionPool();
+functionPool.AddRuntime(js_runtime, (Engine engine) =>
+{
+    // Factory for creating a new instance of the runtime (new up wasm module, register function handlers, etc.)
+    // Must return a dictionary with the elapsed ms of the construction and the name of the instance
+
+    // Runtime init code goes here
+});
+
+functionPool.SetRuntimeConcurrency(js_runtime, new ConcurrencySettings() {
+Minimum: 10, Maximum: 1000, OverprovisioningPercentage: 10});
+
+
+*/
+
+
+
 // store.AddFuel(1000000000);
 
 //
@@ -37,11 +60,13 @@ var maxExecutionMs = 2500;
 // Set memory / CPU limits, fuel, epoch timeout, etc.
 
 // All this stuff can be done once at startup and then reused for every invocation
+
 using var engine = new Engine(new Config().WithEpochInterruption(true)); // Can this engine be reused?
 
-
+// TODO: use DI for this.
+// runtime.
 using var module = Module.FromFile(engine, "javy-example.wasm");
-using var quickjs_provider = Module.FromFile(engine, "javy_quickjs_provider_v1.wasm");
+
 
 
 // how do we do stdin/stdout/stderr? we can inherit them but then that seems unsafe, if we don't inherit can we use the file version safely?
@@ -55,53 +80,14 @@ var iterations = 100000;
 
 for (int i = 0; i < iterations; i++)
 {
-    var storeSw = Stopwatch.StartNew();
-    using var store = new Store(engine);// TODO: store can be initialized with data. how does this work? could we use this to our advantage for passing data to the wasm module?
-    store.SetWasiConfiguration(new WasiConfiguration().WithInheritedStandardInput().WithInheritedStandardOutput().WithInheritedStandardError().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "0.0.1"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
 
-    store.SetEpochDeadline((ulong)maxExecutionMs * 1000);
-
-    Console.WriteLine("HOST: storeSw: " + storeSw.Elapsed);
-    var linkerSw = Stopwatch.StartNew();
-    using var linker = new Linker(engine); // Can this linker be reused?
-    Console.WriteLine("HOST: linkerSw: " + linkerSw.Elapsed);
-    linker.DefineWasi();
-    Console.WriteLine("HOST: linkerSw: " + linkerSw.Elapsed);
-    linker.Define(
-        "ubiquitous_functions",
-        "invoke_json",
-        Function.FromCallback(store, InvokeJson())
-    );
-    Console.WriteLine("HOST: linkerSw: " + linkerSw.Elapsed);
-    
-    var instanceSw = Stopwatch.StartNew();
-    Instance instance = null;
-    var quickjs_instance = linker.Instantiate(store, quickjs_provider);
-    linker.DefineInstance(store, "javy_quickjs_provider_v1", quickjs_instance);
-    
-    instance = linker.Instantiate(store, module);
-    var js_user_code_instance = linker.Instantiate(store, module);
-    linker.DefineInstance(store, "js_user_code_instance", js_user_code_instance);
-    //Console.WriteLine("HOST: Exports:");
-    Console.WriteLine("HOST: instanceSw: " + instanceSw.Elapsed);
-    var startFn = linker.GetFunction(store, "js_user_code_instance", "_start")!;
+    var runtime = new WasmRuntime(engine, "ubiquitous_quickjs_v1");
+    runtime.InvokeMethod("_start");
     // var run = instance.GetAction("_start")!;
     var runSw = Stopwatch.StartNew();
     //module.Exports.ToList().ForEach(e => Console.WriteLine(e.Name));
     //engine.IncrementEpoch();
-    try
-    {
-        startFn.Invoke();
-    }
-    catch (TrapException e)
-    {
-        Console.WriteLine("HOST: TrapException: " + e);
-        
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine("HOST: Exception: " + e);
-    }
+    
     // Lifecycle should be: register module (and check constraints during registration such as only 1 memory export total), store memory exports for each module, as well as function exports
     // then instantiate the instances, start a stopwatch, opt function into Epoch tracking, run function, then at the end calculate memory usage and epoch usage.
     Console.WriteLine("HOST: runsw: " + runSw.Elapsed);
@@ -140,35 +126,3 @@ The Linker type is not compatible with usage between multiple Engine values. An 
 Console.WriteLine($"Elapsed: {start.ElapsedMilliseconds}ms");
 Console.WriteLine($"Iterations: {iterations}");
 Console.WriteLine("HOST: Done");
-
-static CallerFunc<int, int, int> InvokeJson()
-{
-    return (Caller caller, int ptr, int size) =>
-    {
-        var memory = caller!.GetMemory("memory");
-
-        var responseExample = new Response() { ok = true, type = "LogResponse", payload = new LogResponse() { something = new() { "a", "b", "c" } } };
-        var responseAsString = System.Text.Json.JsonSerializer.Serialize(responseExample);
-        var utf8ByteLength = Encoding.UTF8.GetByteCount(responseAsString);
-        Console.WriteLine("HOST: Called invokeJson with pointer: " + ptr + " and size: " + size);
-        var bytes = Encoding.UTF8.GetString(memory.GetSpan<byte>(ptr, size));
-        var input = memory.ReadString(ptr, size, Encoding.UTF8);
-        Console.WriteLine($"HOST: WASM module called invoke_json with value: {input}");
-        Console.WriteLine($"HOST: Requesting WASM module to allocate {utf8ByteLength} bytes (+ 4 byte size header) in guest memory space for storing response...");
-        var guest_malloc = caller.GetFunction("ubiquitous_functions_guest_malloc");
-        if (guest_malloc == null)
-        {
-            Console.WriteLine("HOST: Failed to find guest_malloc function");
-            return -1;
-        }
-        Console.WriteLine("HOST: Invoking guest_malloc...");
-        int mem_loc = (int)(guest_malloc.Invoke(utf8ByteLength + 4) ?? -1);
-        Console.WriteLine($"Guest malloc returned {mem_loc}");
-        // Call WriteByte with each piece of the int32
-        memory.WriteInt32(mem_loc, utf8ByteLength);
-        memory.WriteString(mem_loc + 4, responseAsString, Encoding.UTF8);
-        // https://stackoverflow.com/questions/39550856/what-is-the-right-way-to-allocate-data-to-pass-to-an-ffi-call might be relevant.
-        //TODO: measure and consume fuel.  caller.ConsumeFuel(1000);
-        return mem_loc;
-    };
-}

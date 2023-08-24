@@ -1,13 +1,12 @@
 ﻿using System;
-namespace ubiquitous.functions
+
+namespace ubiquitous.functions.ExecutionContext.FunctionPool
 {
     public class FunctionConfig
     {
+        string Runtime;
         string FunctionName;
         string Version;
-        int MinInstances;
-        int MaxInstances;
-        int OverprovisionPercentage;
         Dictionary<string, string> EnvironmentVariables;
         public string StorageId { get; set; }
     }

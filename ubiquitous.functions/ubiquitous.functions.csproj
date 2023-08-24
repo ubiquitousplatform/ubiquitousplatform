@@ -13,4 +13,13 @@
     <PackageReference Include="Extism.Sdk" Version="0.2.0" />
     <PackageReference Include="Wasmtime" Version="11.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ExecutionContext\FunctionCache\" />
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="javy-example.wasm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

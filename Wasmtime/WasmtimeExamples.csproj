@@ -14,15 +14,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ubiquitous.functions\ubiquitous.functions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="javy-example.wasm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="javy_quickjs_provider_v1.wasm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="wasi-data-sharing.wasm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="runtimes\" />
   </ItemGroup>
 
 </Project>

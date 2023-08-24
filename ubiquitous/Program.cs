@@ -2,18 +2,18 @@
 
 // TODO: make ubiquitous.functions runnable either as a library or as a standalone application
 
-using ubiquitous.functions;
+using ubiquitous.functions.ExecutionContext.FunctionPool;
 
-var pool = new FunctionPool();
+FunctionPool pool = new();
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -24,14 +24,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+string[] summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
+    WeatherForecast[] forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -49,7 +49,11 @@ app.MapGet("/extismtest", async () =>
 {
     // TODO: should function execution be synchronous? probably not, or do we support both direct and queued executions?
     // for performance reasons, direct in vocations ncould get higher priority in the executor engine.
-    return await pool.ExecuteFunction("a", "b");
+    ubiquitous.functions.ExecutionContext.RuntimeQueue.WasmRuntime? runtime = pool.CheckoutRuntime("ubiquitous_quickjs_v1");
+    runtime.LoadFunctionCode("js_user_code_instance", File.ReadAllBytes("../ubiquitous.functions/javy-example.wasm"));
+    runtime.InvokeMethod("_start");
+    pool.CheckinRuntime(runtime);
+    //return await 
 
 });
 app.Run();
