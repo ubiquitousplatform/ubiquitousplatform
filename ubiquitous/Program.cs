@@ -44,13 +44,13 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-
+byte[] funcCode = File.ReadAllBytes("../ubiquitous.functions/javy-example.wasm");
 app.MapGet("/extismtest", async () =>
 {
     // TODO: should function execution be synchronous? probably not, or do we support both direct and queued executions?
     // for performance reasons, direct in vocations ncould get higher priority in the executor engine.
     ubiquitous.functions.ExecutionContext.RuntimeQueue.WasmRuntime? runtime = pool.CheckoutRuntime("ubiquitous_quickjs_v1");
-    runtime.LoadFunctionCode("js_user_code_instance", File.ReadAllBytes("../ubiquitous.functions/javy-example.wasm"));
+    runtime.LoadFunctionCode("js_user_code_instance", funcCode);
     runtime.InvokeMethod("_start");
     pool.CheckinRuntime(runtime);
     //return await 

@@ -82,25 +82,29 @@ namespace ubiquitous.functions.ExecutionContext.FunctionPool
             // We want to make sure that our allocated runtimes are at least the minimum capacity, but
             // we also want to make sure that we have enough available runtimes to service requests by overprovisioning
             // up to a certain percentage.
-            int targetCapacity = AllocatedRuntimes[runtime].Count + (AllocatedRuntimes[runtime].Count * _capacityConfig[runtime].OverprovisionTargetPercentage / 100);
+            int targetCapacity = AllocatedRuntimes[runtime].Count + _capacityConfig[runtime].MinCapacity;
+            // TODO; remove overprovision concept.
+            // int targetCapacity = (totalCount) * _capacityConfig[runtime].OverprovisionTargetPercentage / 100;
 
-            if (targetCapacity < _capacityConfig[runtime].MinCapacity)
+            /*if (targetCapacity < _capacityConfig[runtime].MinCapacity)
             {
                 targetCapacity = _capacityConfig[runtime].MinCapacity;
-            }
+            }*/
 
             // If we're totally out of runtimes, we should add 1 to handle the current request (if we're not already at max capacity)
             if (AvailableRuntimes[runtime].Count == 0)
             {
+                Console.WriteLine("Overrun!");
                 targetCapacity = AllocatedRuntimes[runtime].Count + AvailableRuntimes[runtime].Count + 1;
             }
 
             if (targetCapacity > _capacityConfig[runtime].MaxCapacity)
             {
+                Console.WriteLine("Hit max capacity!");
                 targetCapacity = _capacityConfig[runtime].MaxCapacity;
             }
 
-            Console.WriteLine($"Currently used: {AllocatedRuntimes[runtime].Count}.  Unused: {AvailableRuntimes[runtime].Count}. Scaling {runtime} to {targetCapacity} runtimes.");
+            // Console.WriteLine($"Currently used: {AllocatedRuntimes[runtime].Count}.  Unused: {AvailableRuntimes[runtime].Count}. Scaling {runtime} to {targetCapacity} runtimes.");
 
             // First check if we are underprovisioned below minimum capacity limits. If so, scale up to min capacity.
             while (AllocatedRuntimes[runtime].Count + AvailableRuntimes[runtime].Count < targetCapacity)
@@ -108,6 +112,15 @@ namespace ubiquitous.functions.ExecutionContext.FunctionPool
                 Console.WriteLine("Scaling...");
                 AvailableRuntimes[runtime].Enqueue(new WasmRuntime(_engine, runtime));
             }
+
+            // scaling down should probably be a background thing based on sustained overprovisioning.
+            // If we're overprovisioned, scale down to target capacity. Only scale down one at a time, so we don't scale down too quickly.
+            /*if (AllocatedRuntimes[runtime].Count + AvailableRuntimes[runtime].Count > targetCapacity)
+            {
+                Console.WriteLine("Scaling down...");
+                AvailableRuntimes[runtime].TryDequeue(out WasmRuntime? runtimeInstance);
+                runtimeInstance?.Dispose();
+            }*/
         }
 
         void IFunctionPool.RequestCapacityUpdate(string runtime, Dictionary<string, CapacityConfig> capacity)

@@ -12,7 +12,7 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
         public IReadOnlyList<Import> Imports { get; set; }
         public IReadOnlyList<Export> Exports { get; set; }
     }
-    public class WasmRuntime
+    public class WasmRuntime : IDisposable
     {
         // This could be refactored to have a better runtime cache in the future but this should suffice since we only really have
         // one possible runtime at the moment.
@@ -50,7 +50,8 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
         public void ResetRuntime()
         {
             instantiatedModules.Clear();
-
+            store?.Dispose();
+            linker?.Dispose();
             // TODO: store can be initialized with data. how does this work? could we use this to our advantage for passing data to the wasm module?
             store = new Store(engine);
 
@@ -101,6 +102,7 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
 
             Module module = Module.FromBytes(engine, moduleName, functionCode);
             InstantiateModule(moduleName, module);
+            module.Dispose();
 
             _functionLoaded = true;
         }
@@ -143,7 +145,7 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
             {
                 Memory memory = caller!.GetMemory("memory");
 
-                //Console.WriteLine("HOST: Called invokeJson with pointer: " + ptr + " and size: " + size);
+                Console.WriteLine("HOST: Called invokeJson with pointer: " + ptr + " and size: " + size);
                 string bytes = Encoding.UTF8.GetString(memory.GetSpan<byte>(ptr, size));
                 string input = memory.ReadString(ptr, size, Encoding.UTF8);
                 //Console.WriteLine($"HOST: WASM module called invoke_json with value: {input}");
@@ -174,6 +176,12 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
                 //TODO: measure and consume fuel.  caller.ConsumeFuel(1000);
                 return mem_loc;
             };
+        }
+
+        public void Dispose()
+        {
+            store?.Dispose();
+            linker?.Dispose();
         }
     }
 }
