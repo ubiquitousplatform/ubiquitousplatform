@@ -59,8 +59,8 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
 
 
             // Define Wasi
-            //store.SetWasiConfiguration(new WasiConfiguration().WithInheritedStandardInput().WithInheritedStandardOutput().WithInheritedStandardError().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
-            store.SetWasiConfiguration(new WasiConfiguration().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
+            store.SetWasiConfiguration(new WasiConfiguration().WithInheritedStandardInput().WithInheritedStandardOutput().WithInheritedStandardError().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
+            //store.SetWasiConfiguration(new WasiConfiguration().WithEnvironmentVariables(new List<(string, string)> { ("UBIQUITOUS_RUNTIME_VERSION", "1.0.0"), ("WASMTIME_BACKTRACE_DETAILS", "1"), ("RUST_BACKTRACE", "full") }));
             linker.DefineWasi();
 
             // Add custom invoke_json hook that allows IPC from the guest to the host.
@@ -69,8 +69,8 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
                 "invoke_json",
                 Function.FromCallback(store, _invokeJsonCallback)
             );
-            // TODO: change this to 'runtime' and fix the registration of the runtime name to be 'ubiquitous_quickjs_v1' instead of 'javy_quickjs_provider_v1'
-            InstantiateModule("javy_quickjs_provider_v1", runtimeCache[Runtime]);
+            // TODO: change this to 'runtime' and fix the registration of the runtime name to be 'ubiquitous_quickjs_v1' instead of 'ubiquitous_quickjs_v1'
+            InstantiateModule("ubiquitous_quickjs_v1", runtimeCache[Runtime]);
             _functionLoaded = false;
         }
 

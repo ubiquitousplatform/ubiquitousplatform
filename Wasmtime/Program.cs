@@ -95,11 +95,11 @@ for (int i = 0; i < iterations; i++)
     module.Imports.ToList().ForEach(e => Console.WriteLine($"{e.ModuleName}::{e.Name} ({e.GetType()})"));
     Console.WriteLine("Exports for js_user_code_instance:");
     module.Exports.ToList().ForEach(e => Console.WriteLine($"{e.Name} ({e.GetType()})"));
-    Console.WriteLine("Imports for javy_quickjs_provider_v1:");
+    Console.WriteLine("Imports for ubiquitous_quickjs_v1:");
     quickjs_provider.Imports.ToList().ForEach(e => Console.WriteLine($"{e.ModuleName}::{e.Name} ({e.GetType()})"));
-    Console.WriteLine("Exports for javy_quickjs_provider_v1:");
+    Console.WriteLine("Exports for ubiquitous_quickjs_v1:");
     quickjs_provider.Exports.ToList().ForEach(e => Console.WriteLine($"{e.Name} ({e.GetType()})"));
-    var javyMemoryUsageInBytes = linker.GetMemory(store, "javy_quickjs_provider_v1", "memory")!.GetSize() * 64 * 1024;
+    var javyMemoryUsageInBytes = linker.GetMemory(store, "ubiquitous_quickjs_v1", "memory")!.GetSize() * 64 * 1024;
     //var codeMemoryUsageInBytes = linker.GetMemory(store, "js_user_code_instance", "memory")!.GetSize() * 64 * 1024;
     Console.WriteLine("HOST: Memory consumption:" + javyMemoryUsageInBytes);
 
