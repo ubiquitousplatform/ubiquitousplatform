@@ -70,7 +70,7 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
                 Function.FromCallback(store, _invokeJsonCallback)
             );
             // TODO: change this to 'runtime' and fix the registration of the runtime name to be 'ubiquitous_quickjs_v1' instead of 'javy_quickjs_provider_v1'
-            InstantiateModule("javy_quickjs_provider_v1", runtimeCache[Runtime]);
+            InstantiateModule("ubiquitous_quickjs_v1", runtimeCache[Runtime]);
             _functionLoaded = false;
         }
 
