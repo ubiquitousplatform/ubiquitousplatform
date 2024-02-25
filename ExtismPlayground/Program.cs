@@ -13,22 +13,44 @@ int iterations = 1000;
 //await pool.ExecuteFunction("a", "b");
 //await pool.ExecuteFunction("a", "b");
 //await pool.ExecuteFunction("a", "b");
+byte[] funcCode = File.ReadAllBytes("javy-example.wasm");
+
 
 // Test Serial Invocations
 Stopwatch synchronousSw = Stopwatch.StartNew();
 for (int i = 0; i < iterations; i++)
 {
     Stopwatch sw = Stopwatch.StartNew();
-    var output = await pool.ExecuteFunction("a", "b");
-    if (output.Replace(" ", string.Empty) != "{\"count\":3}")
-    {
-        throw new ArgumentException($"unexpected output {output} on iteration {i}");
-    }
-    Console.WriteLine($"Synchronous FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
+    
+    
+    var runtime = pool.CheckoutRuntime("ubiquitous_quickjs_v1");
+    runtime.LoadFunctionCode("js_user_code_instance", funcCode);
+    var example = new InputExample() { some_input_prop = "hello, world", env = { { "caller", "ubiqitous_test" } } };
+    runtime.StartupRuntime();
+    runtime.InvokeMethod("hello_world", true, example);
+    pool.CheckinRuntime(runtime);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //var output = await pool.ExecuteFunction("a", "b");
+    //if (output.Replace(" ", string.Empty) != "{\"count\":3}")
+    //{
+    //    throw new ArgumentException($"unexpected output {output} on iteration {i}");
+    //}
+    //Console.WriteLine($"Synchronous FunctionPool iteration {i} completed in {sw.ElapsedMilliseconds} ms");
 
 }
 synchronousSw.Stop();
 
+/*
 // Test Parallel Invocations
 // Create a bogus array of x items to use for Parallel.ForEach.
 int[] iterArray = new int[iterations];
@@ -63,3 +85,5 @@ Console.WriteLine($"Synchronous FunctionPool testing completed in {synchronousSw
 Console.WriteLine($"Parallel FunctionPool testing completed in {asyncSw.ElapsedMilliseconds} ms");
 // var a = "hi";
 
+
+*/

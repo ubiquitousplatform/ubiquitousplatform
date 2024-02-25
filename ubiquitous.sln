@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WasmtimeExamples", "Wasmtime\WasmtimeExamples.csproj", "{12C82951-BE6D-4791-B298-E059F7979A7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.unit.tests", "ubiquitous.unit.tests\ubiquitous.unit.tests.csproj", "{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkWasmRuntimes", "BenchmarkWasmRuntimes\BenchmarkWasmRuntimes.csproj", "{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +99,14 @@ Global
 		{12C82951-BE6D-4791-B298-E059F7979A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12C82951-BE6D-4791-B298-E059F7979A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12C82951-BE6D-4791-B298-E059F7979A7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

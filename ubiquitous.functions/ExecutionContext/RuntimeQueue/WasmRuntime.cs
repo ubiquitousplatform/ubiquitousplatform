@@ -43,7 +43,7 @@ namespace ubiquitous.functions.ExecutionContext.RuntimeQueue
             // Initialize our module in the cache if it's not already there.
             if (!runtimeCache.ContainsKey(runtime))
             {
-                runtimeCache[runtime] = Module.FromFile(engine, "../ubiquitous.functions/runtimes/ubiquitous_quickjs_v1.wasm");
+                runtimeCache[runtime] = Module.FromFile(engine, "runtimes/ubiquitous_quickjs_v1.wasm");
             }
             ResetRuntime();
         }

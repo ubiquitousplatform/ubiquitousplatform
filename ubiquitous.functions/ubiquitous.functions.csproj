@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Extism.Sdk" />
+    <None Remove="javy-example.wasm" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Extism.Sdk" Version="0.2.0" />
@@ -16,10 +17,5 @@
   <ItemGroup>
     <Folder Include="ExecutionContext\FunctionCache\" />
     <Folder Include="NewFolder\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="javy-example.wasm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
