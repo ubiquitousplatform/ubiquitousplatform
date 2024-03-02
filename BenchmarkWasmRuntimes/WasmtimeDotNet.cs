@@ -9,11 +9,11 @@ public class WasmtimeDotNet
     [GlobalSetup]
     public void GlobalSetup()
     {
-        
-        FunctionPool pool = new();
+        /*
+        FunctionPool pool = new();*/
 
 //await pool.ExecuteFunction("a", "b");
-        byte[] funcCode = File.ReadAllBytes("javy-example.wasm");
+        var funcCode = File.ReadAllBytes("javy-example.wasm");
 
         //Write your initialization code here
     }
