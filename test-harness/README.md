@@ -28,13 +28,19 @@ HelloHostWebpack(byte[])
 | Function Alias                | Description                                                                                                                                    |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | doNothing                     | No params, no return value, just a sample call                                                                                                 |
-| no-params_string-return       | No params, returns a hardcoded `Hello, World!` string.                                                                                         |
+| returnHelloWorld              | No params, returns a hardcoded `Hello, World!` string.                                                                                         |
 | strlen                        | Takes in a string and returns the length of the string                                                                                         |
 | max                           | Takes in an array of integers and returns the maximum value                                                                                    |
-| min                           | Takes in an array of integers and returns the minimum value                                                                                    |
 | callStaticHostMethod(message) | Calls the host method "HelloHost" with the string `Hello from WASM! Message: {message}` if a message is supplied, otherwise `Hello from WASM!` |
 | callJSONHostMethod            |                                                                                                                                                |
 | createHostError(message)      | Throws a host error with the specified message                                                                                                 |
+| echoToStdout                  | Relies on WASI.  Writes the message sent in to stdout                                                                                          |
+| echoToLog                     | Writes the sent in message to the log                                                                                                          |
+| loadConfig                    |                                                                                                                                                |
+| setVar                        |                                                                                                                                                |
+| setManyVars                   |                                                                                                                                                |
+| getVar                        |                                                                                                                                                |
+| getManyVars                   |                                                                                                                                                |
 |                               |                                                                                                                                                |
 
 
