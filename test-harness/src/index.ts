@@ -28,17 +28,17 @@ function registerFn(fn: Function) {
   };
 }
 
-export var strlen = registerFn((input: string) => input.length.toString());
+const strlen = registerFn((input: string) => input.length.toString());
 
-export var get_closest = registerFn(
+const get_closest = registerFn(
   (input: string) =>
     `${closest(input, ["slow", "faster", "fastest"])} ${privateFunc()}`
 );
 
 // why doesn't this work? is math.random not working?
 // why don't we see the output from teh console.log? is it because of extism call or because of the wrapping?
-export var b = registerFn((input: string) => {
-  console.log("randomstr called");
+const randomstr = registerFn((input: string) => {
+  // console.log("randomstr called");
   var length = parseInt(input);
   let result = "";
   const characters =
@@ -49,23 +49,10 @@ export var b = registerFn((input: string) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
     counter += 1;
   }
-  console.log(`Length: ${length}`);
-  return length.toString() + " " + result;
+  // console.log(`Length: ${length}`);
+  return result;
 });
 
-// the downside to this type of wrapping is that it happens at runtime. also it doesn't seem to work right.
-/*
-export var get_closest = () =>
-  withExtism(
-    async (input: string) =>
-      `${closest(input, ["slow", "faster", "fastest"])} ${privateFunc()}`
-  );*/
+const returnHelloWorld = registerFn(() => "Hello, world!");
 
-/*
-// use any export syntax to export a function be callable by the extism host
-export function get_closest() {
-  let input = Host.inputString();
-  let result = closest(input, ["slow", "faster", "fastest"]);
-  Host.outputString(result + " " + privateFunc());
-}
-*/
+export { strlen, get_closest, randomstr, returnHelloWorld };
