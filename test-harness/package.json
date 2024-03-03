@@ -1,0 +1,21 @@
+{
+  "name": "test-harness",
+  "version": "1.0.0",
+  "description": "This project contains a test harness for an Extism-compatible WebAssembly module that exposes multiple test methods.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node esbuild.js && extism-js dist/index.js -i src/index.d.ts -o dist/plugin.wasm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.20.1",
+    "npm-dts": "^1.3.12",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "fastest-levenshtein": "^1.0.16"
+  }
+}
