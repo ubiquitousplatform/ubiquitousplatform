@@ -8,3 +8,4 @@ echo "\nTesting randomstr. expected output: 56 character long random string"
 extism call dist/test-harness.wasm randomstr --input="56" --wasi
 echo "\nTesting returnHelloWorld. expected output: Hello, World!"
 extism call dist/test-harness.wasm returnHelloWorld --wasi
+./copy-to-ubiquitous.functions.tests.unit.sh
