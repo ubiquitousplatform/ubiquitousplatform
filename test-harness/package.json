@@ -4,8 +4,8 @@
   "description": "This project contains a test harness for an Extism-compatible WebAssembly module that exposes multiple test methods.",
   "main": "index.js",
   "scripts": {
-    "build": "node esbuild.js && extism-js dist/index.js -i src/index.d.ts -o dist/plugin.wasm",
-    "test": "extism call dist/plugin.wasm get_closest --input=\"fist\" --wasi"
+    "build": "node esbuild.js && extism-js dist/index.js -i src/index.d.ts -o dist/test-harness.wasm",
+    "test": "extism call dist/test-harness.wasm get_closest --input=\"fist\" --wasi"
   },
   "keywords": [],
   "author": "",
