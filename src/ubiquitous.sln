@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Currently Unused", "Current
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.functions.tests.unit", "ubiquitous.functions.tests.unit\ubiquitous.functions.tests.unit.csproj", "{DD8FF6FC-279E-42A0-BD17-3D633EFC4402}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.functions.console.tests", "ubiquitous.functions.console.tests\ubiquitous.functions.console.tests.csproj", "{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{DD8FF6FC-279E-42A0-BD17-3D633EFC4402}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD8FF6FC-279E-42A0-BD17-3D633EFC4402}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD8FF6FC-279E-42A0-BD17-3D633EFC4402}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
