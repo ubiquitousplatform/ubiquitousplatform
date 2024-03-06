@@ -11,7 +11,7 @@
     <None Remove="javy-example.wasm" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Extism.Sdk" Version="0.2.0" />
+    <PackageReference Include="Extism.Sdk" Version="1.1.0" />
     <PackageReference Include="Wasmtime" Version="11.0.1" />
   </ItemGroup>
   <ItemGroup>
