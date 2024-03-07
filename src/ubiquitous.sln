@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.functions.tests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.functions.console.tests", "ubiquitous.functions.console.tests\ubiquitous.functions.console.tests.csproj", "{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.stdlib", "ubiquitous.stdlib\ubiquitous.stdlib.csproj", "{CA0D608B-3D37-417E-9484-7C61BA12FBDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C129C0B-61D7-4AC6-8D11-93BB4E0C4FEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
