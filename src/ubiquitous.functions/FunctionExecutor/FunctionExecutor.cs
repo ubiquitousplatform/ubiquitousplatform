@@ -60,7 +60,7 @@ public class FunctionExecutor : IFunctionExecutor
         manifest.Timeout = TimeSpan.FromSeconds(5);
         try
         {
-            var _plugin = new Plugin(manifest, new HostFunction[] { }, true);
+            _plugin = new Plugin(manifest, new HostFunction[] { }, true);
         }
         catch (Exception e)
         {
@@ -86,14 +86,14 @@ public class FunctionExecutor : IFunctionExecutor
 
     public void Configure()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("TODO: pass in config and set up plugin");
     }
 
     public string Init(string input)
     {
-        var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Active, "Call");
+        var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Loaded, "Init", FunctionLifecycle.Initializing);
         var result = _plugin.Call("_init", input);
-        EndLifecyclePhase(metrics, sw);
+        EndLifecyclePhase(metrics, sw, FunctionLifecycle.Active);
         return result;
     }
 

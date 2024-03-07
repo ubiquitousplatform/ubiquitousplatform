@@ -35,9 +35,9 @@ public class ExtismNativeTests
     [InlineData("HeLlO", 5)]
     [InlineData("HELLO", 5)]
     [InlineData("Hello, World!", 13)]
-    [InlineData("This is a super long sentence to test that it can measure a long string", 5)]
-    [InlineData("This string has a data in it\n\t\t\nWith some more data afterward.", 5)]
-    [InlineData("This string has emojis \ud83d\udd25", 5)]
+    [InlineData("This is a super long sentence to test that it can measure a long string", 71)]
+    [InlineData("This string has a data in it\n\t\t\nWith some more data afterward.", 62)]
+    [InlineData("This string has emojis \ud83d\udd25", 25)]
     public void FunctionCallAndReturnTest_StrlenReturnsCorrectLength_RawStringIO(string input, int expectedLength)
     {
         var result = _func.Call("strlen", input);

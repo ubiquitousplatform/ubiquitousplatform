@@ -62,8 +62,6 @@ public class FunctionExecutorTests
     public void StateTests_NotLoaded_InitializingFails()
     {
         var func = new FunctionExecutor();
-        var pluginBytes = File.ReadAllBytes("test-harness.wasm");
-        func.Load(pluginBytes);
 
         Assert.Throws<PluginStateIncorrectException>(() =>
         {
@@ -79,8 +77,10 @@ public class FunctionExecutorTests
         func.Load(pluginBytes);
         func.Configure();
         func.Init("test");
-        var result = func.Call("strlen", "Hello World!");
+        Assert.Equal("12", func.Call("strlen", "Hello World!"));
     }
 
     // TODO; validate timings are reasonable
+
+    // TODO: write tests that validate _init won't work if it's not defined (isn't this the same as checking exports?)
 }

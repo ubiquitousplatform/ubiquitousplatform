@@ -1,5 +1,7 @@
 import { distance, closest } from "fastest-levenshtein";
 
+const _init = registerFn(() => "Doing one-time initialization.");
+
 // this function is private to the module
 function privateFunc() {
   return "world";
@@ -55,4 +57,4 @@ const randomstr = registerFn((input: string) => {
 
 const returnHelloWorld = registerFn(() => "Hello, world!");
 
-export { strlen, get_closest, randomstr, returnHelloWorld };
+export { strlen, get_closest, randomstr, returnHelloWorld, _init };
