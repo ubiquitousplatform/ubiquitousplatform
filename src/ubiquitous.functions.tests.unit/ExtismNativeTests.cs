@@ -14,7 +14,7 @@ namespace ubiquitous.functions.tests.unit;
 //   * ?? Measure Fuel
 public class ExtismNativeTests
 {
-    private FunctionExecutor _func;
+    private readonly FunctionExecutor _func;
 
     public ExtismNativeTests()
     {
@@ -22,9 +22,9 @@ public class ExtismNativeTests
         var pluginBytes = File.ReadAllBytes("test-harness.wasm");
         _func.Load(pluginBytes);
         _func.Configure();
-        _func.Init();
+        _func.Init("test");
     }
-    
+
     [Theory]
     [InlineData("", 0)]
     [InlineData("a", 1)]
@@ -41,9 +41,7 @@ public class ExtismNativeTests
     public void FunctionCallAndReturnTest_StrlenReturnsCorrectLength_RawStringIO(string input, int expectedLength)
     {
         var result = _func.Call("strlen", input);
-        var length = Int32.Parse(result);
+        var length = int.Parse(result);
         Assert.Equal(expectedLength, length);
     }
-    
-    
 }

@@ -1,3 +1,4 @@
+using Extism.Sdk;
 using ubiquitous.functions.FunctionExecutor;
 
 namespace ubiquitous.functions.tests.unit;
@@ -16,7 +17,7 @@ public class FunctionExecutorTests
     public void EmptyByteArray_ThrowsException()
     {
         var func = new FunctionExecutor();
-        func.Load(new byte[] { });
+        Assert.Throws<ExtismException>(() => func.Load(new byte[] { }));
     }
 
     [Fact(Skip = "not yet implemented")]
@@ -26,12 +27,13 @@ public class FunctionExecutorTests
         func.Load(new byte[] { });
     }
 
-    [Fact(Skip = "not yet implemented")]
+    [Fact]
     public void InvalidWasmModule_ThrowsException()
     {
         var func = new FunctionExecutor();
-        var pluginBytes = File.ReadAllBytes("test-harness.wasm");
-        func.Load(pluginBytes);
+        // Get random bytes out of the middle of the wasm file, which "probably" isn't an invalid wasm file
+        var pluginBytes = File.ReadAllBytes("test-harness.wasm").Skip(53821).Take(10204).ToArray();
+        Assert.Throws<ExtismException>(() => func.Load(pluginBytes));
     }
 
     [Fact]
@@ -40,7 +42,10 @@ public class FunctionExecutorTests
         var func = new FunctionExecutor();
         var pluginBytes = File.ReadAllBytes("test-harness.wasm");
         func.Load(pluginBytes);
-        var result = func.Call("strlen", "Hello World!");
+        Assert.Throws<PluginStateIncorrectException>(() =>
+        {
+            var result = func.Call("strlen", "Hello World!");
+        });
     }
 
     [Fact]
@@ -59,7 +64,11 @@ public class FunctionExecutorTests
         var func = new FunctionExecutor();
         var pluginBytes = File.ReadAllBytes("test-harness.wasm");
         func.Load(pluginBytes);
-        var result = func.Call("strlen", "Hello World!");
+
+        Assert.Throws<PluginStateIncorrectException>(() =>
+        {
+            var result = func.Init("Hello World!");
+        });
     }
 
     [Fact]
@@ -69,9 +78,9 @@ public class FunctionExecutorTests
         var pluginBytes = File.ReadAllBytes("test-harness.wasm");
         func.Load(pluginBytes);
         func.Configure();
-        func.Init();
+        func.Init("test");
         var result = func.Call("strlen", "Hello World!");
     }
-    
+
     // TODO; validate timings are reasonable
 }

@@ -71,11 +71,6 @@ public class FunctionExecutor : IFunctionExecutor
         _currentLifecycleState = FunctionLifecycle.Loaded;
     }
 
-    public void Init()
-    {
-        throw new NotImplementedException();
-    }
-
     public string Call(string method, string input)
     {
         var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Active, "Call");
@@ -92,6 +87,14 @@ public class FunctionExecutor : IFunctionExecutor
     public void Configure()
     {
         throw new NotImplementedException();
+    }
+
+    public string Init(string input)
+    {
+        var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Active, "Call");
+        var result = _plugin.Call("_init", input);
+        EndLifecyclePhase(metrics, sw);
+        return result;
     }
 
     private void EndLifecyclePhase(ExecutionMetrics metrics, Stopwatch sw, FunctionLifecycle? destinationState = null)
