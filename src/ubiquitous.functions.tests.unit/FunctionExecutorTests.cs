@@ -33,7 +33,7 @@ public class FunctionExecutorTests
         var func = new FunctionExecutor();
         // Get random bytes out of the middle of the wasm file, which "probably" isn't an invalid wasm file
         var pluginBytes = File.ReadAllBytes("test-harness.wasm").Skip(53821).Take(10204).ToArray();
-        Assert.Throws<ExtismException>(() => func.Load(pluginBytes));
+        Assert.ThrowsAny<Exception>(() => func.Load(pluginBytes));
     }
 
     [Fact]

@@ -44,4 +44,27 @@ public class ExtismNativeTests
         var length = int.Parse(result);
         Assert.Equal(expectedLength, length);
     }
+
+    [Fact]
+    public void FunctionCallTest_DoNothing_DoesNothing()
+    {
+        var result = _func.Call("doNothing", "");
+        Assert.Equal("", result);
+    }
+
+    [Theory]
+    [InlineData("1", 1)]
+    [InlineData("-1", -1)]
+    [InlineData("1.0", 1)]
+    [InlineData("1,2,3", 3)]
+    [InlineData("3,2,1", 3)]
+    [InlineData("1,2,3,2,1", 3)]
+    [InlineData("3,3,3", 3)]
+    [InlineData("1,3,2,3,1", 3)]
+    [InlineData("100000,-5", 100000)]
+    public void FunctionCallTest_MaxFunctionTakesIntArrayAsCSV_CorrectlyFindsMaxValue(string input, int maxVal)
+    {
+        var result = _func.Call("max", input);
+        Assert.Equal(maxVal, int.Parse(result));
+    }
 }

@@ -32,7 +32,7 @@ function registerFn(fn: Function) {
 
 const strlen = registerFn((input: string) => input.length.toString());
 
-const get_closest = registerFn(
+const getClosest = registerFn(
   (input: string) =>
     `${closest(input, ["slow", "faster", "fastest"])} ${privateFunc()}`
 );
@@ -57,4 +57,18 @@ const randomstr = registerFn((input: string) => {
 
 const returnHelloWorld = registerFn(() => "Hello, world!");
 
-export { strlen, get_closest, randomstr, returnHelloWorld, _init };
+const doNothing = registerFn(() => "");
+const max = registerFn((input: string) => {
+  let numbers = input.split(",").map((i) => parseInt(i));
+  return Math.max(...numbers).toString();
+});
+
+export {
+  _init,
+  doNothing,
+  getClosest,
+  max,
+  randomstr,
+  returnHelloWorld,
+  strlen,
+};
