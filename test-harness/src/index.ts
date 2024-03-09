@@ -58,15 +58,36 @@ const randomstr = registerFn((input: string) => {
 const returnHelloWorld = registerFn(() => "Hello, world!");
 
 const doNothing = registerFn(() => "");
+
 const max = registerFn((input: string) => {
   let numbers = input.split(",").map((i) => parseInt(i));
   return Math.max(...numbers).toString();
+});
+
+const intArrayStatsJSON = registerFn((input: string) => {
+  let numbers: number[] = JSON.parse(input);
+  let max = Math.max(...numbers);
+  let min = Math.min(...numbers);
+  let sum = numbers.reduce((a: number, b: number) => a + b, 0);
+  let mean = Math.floor(sum / numbers.length);
+  let median = numbers.sort((a: number, b: number) => a - b)[
+    Math.floor(numbers.length / 2)
+  ];
+  let result = {
+    max,
+    min,
+    sum,
+    mean,
+    median,
+  };
+  return JSON.stringify(result);
 });
 
 export {
   _init,
   doNothing,
   getClosest,
+  intArrayStatsJSON,
   max,
   randomstr,
   returnHelloWorld,

@@ -10,4 +10,6 @@ echo "\nTesting returnHelloWorld. expected output: Hello, World!"
 extism call dist/test-harness.wasm returnHelloWorld --wasi
 echo "\nTesting doNothing. expect empty output."
 extism call dist/test-harness.wasm doNothing --wasi
+echo "\nTesting intArrayStatsJSON. expect empty output."
+extism call dist/test-harness.wasm intArrayStatsJSON --input="[1, 2, 5, -1, 5, 5, 9, 100, 204]" --wasi
 ./copy-to-ubiquitous.functions.tests.unit.sh

@@ -4,6 +4,7 @@ declare module "main" {
   export function _init(): I32;
   export function doNothing(): I32;
   export function getClosest(): I32;
+  export function intArrayStatsJSON(): I32;
   export function max(): I32;
   export function randomstr(): I32;
   export function returnHelloWorld(): I32;
