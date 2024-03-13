@@ -9,4 +9,11 @@ declare module "main" {
   export function randomstr(): I32;
   export function returnHelloWorld(): I32;
   export function strlen(): I32;
+  export function ubiqEcho(): I32;
+}
+
+declare module "extism:host" {
+  interface user {
+    ubiqDispatch(ptr: I64): I64;
+  }
 }

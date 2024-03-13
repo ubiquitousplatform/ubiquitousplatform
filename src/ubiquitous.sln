@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.functions.consol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.stdlib", "ubiquitous.stdlib\ubiquitous.stdlib.csproj", "{CA0D608B-3D37-417E-9484-7C61BA12FBDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleFunctionTester", "ConsoleFunctionTester\ConsoleFunctionTester.csproj", "{B4BC2888-07F9-4BCF-8AC2-ED1D11F4083B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA0D608B-3D37-417E-9484-7C61BA12FBDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4BC2888-07F9-4BCF-8AC2-ED1D11F4083B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4BC2888-07F9-4BCF-8AC2-ED1D11F4083B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4BC2888-07F9-4BCF-8AC2-ED1D11F4083B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4BC2888-07F9-4BCF-8AC2-ED1D11F4083B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +149,7 @@ Global
 		{15F7C22A-6FB9-48C3-8EE4-5657B31CC048} = {785320AD-BD2F-45C4-8A0B-67331C59116E}
 		{ADD49047-4480-44E3-977D-626EE0886C45} = {785320AD-BD2F-45C4-8A0B-67331C59116E}
 		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79} = {C8A75236-4A6E-4FC7-97D0-523E834B1E81}
+		{B4BC2888-07F9-4BCF-8AC2-ED1D11F4083B} = {C8A75236-4A6E-4FC7-97D0-523E834B1E81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F98C60F8-5801-4A22-B16D-9D9388B4110B}

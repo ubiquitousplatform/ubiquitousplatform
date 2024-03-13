@@ -1,3 +1,4 @@
+using System.Text;
 using Extism.Sdk;
 using ubiquitous.functions.FunctionExecutor;
 
@@ -10,6 +11,8 @@ public class FunctionExecutorTests
     {
         var func = new FunctionExecutor();
         var pluginBytes = File.ReadAllBytes("test-harness.wasm");
+        func.RegisterHostFunction("ubiqDispatch",
+            (plugin, memoryOffset) => { return plugin.WriteBytes(Encoding.UTF8.GetBytes("")); });
         func.Load(pluginBytes);
     }
 

@@ -41,7 +41,7 @@ HelloHostWebpack(byte[])
 | setManyVars                   |                                                                                                                                                |
 | getVar                        |                                                                                                                                                |
 | getManyVars                   |                                                                                                                                                |
-|                               |                                                                                                                                                |
+|          intArrayStatsJSON                     |          Pass in a stringified int array, return an object with stats on the input array                                                                                                                                      |
 
 
 

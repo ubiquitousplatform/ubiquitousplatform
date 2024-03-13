@@ -8,17 +8,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ubiquitous.functions\ubiquitous.functions.csproj" />
+        <ProjectReference Include="..\ubiquitous.functions\ubiquitous.functions.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="test-harness.wasm">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <PackageReference Include="Extism.runtime.all" Version="1.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Extism.runtime.all" Version="1.1.0" />
+        <None Update="test-harness.wasm">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

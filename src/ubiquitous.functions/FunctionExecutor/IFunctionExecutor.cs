@@ -1,3 +1,5 @@
+using Extism.Sdk;
+
 namespace ubiquitous.functions.tests.unit;
 
 /// <summary>
@@ -16,5 +18,5 @@ public interface IFunctionExecutor
     public string Init(string input);
     public string Call(string method, string input);
 
-    public void RegisterHostFunction();
+    public void RegisterHostFunction(string name, Func<CurrentPlugin, long, long> callback);
 }

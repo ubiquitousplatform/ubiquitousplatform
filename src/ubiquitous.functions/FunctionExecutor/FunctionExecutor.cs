@@ -36,8 +36,8 @@ public class FunctionExecutorStatistics
 
 public class FunctionExecutor : IFunctionExecutor
 {
+    private readonly List<HostFunction> _hostFunctions = new();
     private FunctionLifecycle _currentLifecycleState;
-
 
     private Plugin _plugin;
 
@@ -56,11 +56,35 @@ public class FunctionExecutor : IFunctionExecutor
             new Manifest(
                 new ByteArrayWasmSource(pluginBytes, "hello"));
         //var manifest = new Manifest(new PathWasmSource("test-harness.wasm", "test-harness"));
-        // TODO: register timeout 
+        // TODO: configurable timeout 
         manifest.Timeout = TimeSpan.FromSeconds(5);
         try
         {
-            _plugin = new Plugin(manifest, new HostFunction[] { }, true);
+            _plugin = new Plugin(manifest, new[]
+            {
+                HostFunction.FromMethod<long, long>("ubiqDispatch", IntPtr.Zero,
+                    (plugin, x) =>
+                    {
+                        var c = (char)x;
+
+                        switch (char.ToLowerInvariant(c))
+                        {
+                            case 'a':
+                            case 'A':
+                            case 'e':
+                            case 'E':
+                            case 'i':
+                            case 'I':
+                            case 'o':
+                            case 'O':
+                            case 'u':
+                            case 'U':
+                                return 1;
+                        }
+
+                        return 0;
+                    })
+            }, true);
         }
         catch (Exception e)
         {
@@ -71,17 +95,14 @@ public class FunctionExecutor : IFunctionExecutor
         _currentLifecycleState = FunctionLifecycle.Loaded;
     }
 
+    // TODO: write a CTOR that goes through all the flow steps up to Init
+
     public string Call(string method, string input)
     {
         var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Active, "Call");
         var result = _plugin.Call(method, input);
         EndLifecyclePhase(metrics, sw);
         return result;
-    }
-
-    public void RegisterHostFunction()
-    {
-        throw new NotImplementedException();
     }
 
     public void Configure()
@@ -92,9 +113,31 @@ public class FunctionExecutor : IFunctionExecutor
     public string Init(string input)
     {
         var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Loaded, "Init", FunctionLifecycle.Initializing);
-        var result = _plugin.Call("_init", input);
+        //var result = _plugin.Call("_init", input);
         EndLifecyclePhase(metrics, sw, FunctionLifecycle.Active);
-        return result;
+        return "";
+        //return result;
+    }
+
+    public void RegisterHostFunction(string name, Func<CurrentPlugin, long, long> callback)
+    {
+        // TODO: protect the phase of this method so it can't be done out of order.
+
+        // pretend this is Redis or something :)
+        //var kvStore = new Dictionary<string, byte[]>();
+        _hostFunctions.Add(
+            HostFunction.FromMethod(name, IntPtr.Zero, callback));
+
+
+        /*HostFunction.FromMethod("kv_write", IntPtr.Zero, (CurrentPlugin plugin, long keyOffset, long valueOffset) =>
+        {
+            var key = plugin.ReadString(keyOffset);
+            var value = plugin.ReadBytes(valueOffset);
+
+            Console.WriteLine($"Writing value={BitConverter.ToUInt32(value)} from key={key}");
+            kvStore[key] = value.ToArray();
+        })*/
+        //throw new NotImplementedException();
     }
 
     private void EndLifecyclePhase(ExecutionMetrics metrics, Stopwatch sw, FunctionLifecycle? destinationState = null)

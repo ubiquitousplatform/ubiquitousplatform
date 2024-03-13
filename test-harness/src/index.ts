@@ -1,6 +1,7 @@
 import { distance, closest } from "fastest-levenshtein";
 
 const _init = registerFn(() => "Doing one-time initialization.");
+const { ubiqDispatch } = Host.getFunctions();
 
 // this function is private to the module
 function privateFunc() {
@@ -83,6 +84,29 @@ const intArrayStatsJSON = registerFn((input: string) => {
   return JSON.stringify(result);
 });
 
+const ubiqEcho = registerFn((input: string) => {
+  console.log("ubiqEcho called with input: ", input);
+  let msg = "Hello from js!";
+  // TODO: build a byte array that has the full header and try to pass it over.
+  let mem = Memory.fromString(msg);
+
+  let offset = ubiqDispatch(mem.offset);
+  let response = Memory.find(offset).readString();
+  if (response != "myHostFunction1: " + msg) {
+    throw Error(`wrong message came back from myHostFunction1: ${response}`);
+  }
+
+  let msg2 = { hello: "world!" };
+  mem = Memory.fromJsonObject(msg2);
+  offset = ubiqDispatch(mem.offset);
+  let response2 = Memory.find(offset).readJsonObject();
+  if (response2.hello != "myHostFunction2") {
+    throw Error(`wrong message came back from myHostFunction2: ${response}`);
+  }
+  return "called host function!";
+  //Host.outputString(`Hello, World!`);
+});
+
 export {
   _init,
   doNothing,
@@ -92,4 +116,6 @@ export {
   randomstr,
   returnHelloWorld,
   strlen,
+  ubiqEcho,
+  //ubiqKVStoreRW,
 };
