@@ -31,11 +31,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.logs", "ubiquito
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments", "{C8A75236-4A6E-4FC7-97D0-523E834B1E81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WasmtimeExamples", "Wasmtime\WasmtimeExamples.csproj", "{12C82951-BE6D-4791-B298-E059F7979A7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WasmtimeExamples", "Wasmtime\WasmtimeExamples.csproj", "{12C82951-BE6D-4791-B298-E059F7979A7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ubiquitous.unit.tests", "ubiquitous.unit.tests\ubiquitous.unit.tests.csproj", "{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ubiquitous.unit.tests", "ubiquitous.unit.tests\ubiquitous.unit.tests.csproj", "{923E7CCA-6F3C-4FB3-9D30-354E7086F9B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkWasmRuntimes", "BenchmarkWasmRuntimes\BenchmarkWasmRuntimes.csproj", "{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkWasmRuntimes", "BenchmarkWasmRuntimes\BenchmarkWasmRuntimes.csproj", "{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspirational.AppHost", "Aspirational\Aspirational.AppHost\Aspirational.AppHost.csproj", "{F6F4D5F4-B782-423C-9BEB-B519F25EDBB4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aspirational.ServiceDefaults", "Aspirational\Aspirational.ServiceDefaults\Aspirational.ServiceDefaults.csproj", "{2346881E-F30E-4642-BB78-6F42AC49F9A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aspirational.ApiService", "Aspirational\Aspirational.ApiService\Aspirational.ApiService.csproj", "{911ED32E-9390-4F49-BAD4-22BE2A19C659}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aspirational.Web", "Aspirational\Aspirational.Web\Aspirational.Web.csproj", "{36C3F6C8-1F42-434D-B6CE-495035F5D6E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +115,22 @@ Global
 		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACB2904E-8C84-48A9-BA7F-2A82B1597C79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F4D5F4-B782-423C-9BEB-B519F25EDBB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F4D5F4-B782-423C-9BEB-B519F25EDBB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F4D5F4-B782-423C-9BEB-B519F25EDBB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F4D5F4-B782-423C-9BEB-B519F25EDBB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2346881E-F30E-4642-BB78-6F42AC49F9A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2346881E-F30E-4642-BB78-6F42AC49F9A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2346881E-F30E-4642-BB78-6F42AC49F9A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2346881E-F30E-4642-BB78-6F42AC49F9A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{911ED32E-9390-4F49-BAD4-22BE2A19C659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{911ED32E-9390-4F49-BAD4-22BE2A19C659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{911ED32E-9390-4F49-BAD4-22BE2A19C659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{911ED32E-9390-4F49-BAD4-22BE2A19C659}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C3F6C8-1F42-434D-B6CE-495035F5D6E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C3F6C8-1F42-434D-B6CE-495035F5D6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C3F6C8-1F42-434D-B6CE-495035F5D6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C3F6C8-1F42-434D-B6CE-495035F5D6E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
