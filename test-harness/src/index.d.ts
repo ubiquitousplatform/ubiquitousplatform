@@ -4,6 +4,7 @@ declare module "main" {
 
 declare module "extism:host" {
   interface user {
+    debug(ptr: I64): void;
     ubiqDispatch(ptr: I64): I64;
   }
 }

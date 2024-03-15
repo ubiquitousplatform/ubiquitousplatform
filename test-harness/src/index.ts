@@ -1,4 +1,9 @@
-const { ubiqDispatch } = Host.getFunctions();
+const { debug, ubiqDispatch } = Host.getFunctions();
+
+console.log = (msg) => {
+  let mem = Memory.fromString(msg);
+  debug(mem.offset);
+};
 
 function registerFn(fn: Function) {
   // TODO: have this method called registerFunction and have it return a function that takes no params and returns an I32

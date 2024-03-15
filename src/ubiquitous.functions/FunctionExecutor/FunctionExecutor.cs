@@ -1,5 +1,5 @@
-using Extism.Sdk;
 using System.Diagnostics;
+using Extism.Sdk;
 using ubiquitous.functions.FunctionExecutor;
 using ubiquitous.stdlib;
 
@@ -61,31 +61,7 @@ public class FunctionExecutor : IFunctionExecutor
         // manifest.MemoryOptions = new MemoryOptions { MaxVarBytes = 0 };
         try
         {
-            _plugin = new Plugin(manifest, new[]
-            {
-                HostFunction.FromMethod<long, long>("ubiqDispatch", IntPtr.Zero,
-                    (plugin, x) =>
-                    {
-                        var c = (char)x;
-
-                        switch (char.ToLowerInvariant(c))
-                        {
-                            case 'a':
-                            case 'A':
-                            case 'e':
-                            case 'E':
-                            case 'i':
-                            case 'I':
-                            case 'o':
-                            case 'O':
-                            case 'u':
-                            case 'U':
-                                return 1;
-                        }
-
-                        return 0;
-                    })
-            }, true);
+            _plugin = new Plugin(manifest, _hostFunctions.ToArray(), true);
         }
         catch (Exception e)
         {
@@ -152,6 +128,12 @@ public class FunctionExecutor : IFunctionExecutor
             kvStore[key] = value.ToArray();
         })*/
         //throw new NotImplementedException();
+    }
+
+    public void RegisterHostFunction(string name, Action<CurrentPlugin, long> callback)
+    {
+        _hostFunctions.Add(
+            HostFunction.FromMethod(name, IntPtr.Zero, callback));
     }
 
     private void EndLifecyclePhase(ExecutionMetrics metrics, Stopwatch sw, FunctionLifecycle? destinationState = null)
