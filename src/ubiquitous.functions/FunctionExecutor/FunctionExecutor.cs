@@ -58,6 +58,7 @@ public class FunctionExecutor : IFunctionExecutor
         //var manifest = new Manifest(new PathWasmSource("test-harness.wasm", "test-harness"));
         // TODO: configurable timeout 
         manifest.Timeout = TimeSpan.FromSeconds(5);
+        // manifest.MemoryOptions = new MemoryOptions { MaxVarBytes = 0 };
         try
         {
             _plugin = new Plugin(manifest, new[]
