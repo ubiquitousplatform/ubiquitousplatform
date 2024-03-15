@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using Extism.Sdk;
+using System.Diagnostics;
 using ubiquitous.functions.FunctionExecutor;
 using ubiquitous.stdlib;
 
@@ -101,9 +101,22 @@ public class FunctionExecutor : IFunctionExecutor
     public string Call(string method, string input)
     {
         var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Active, "Call");
-        var result = _plugin.Call(method, input);
-        EndLifecyclePhase(metrics, sw);
-        return result;
+        try
+        {
+            var result = _plugin.Call(method, input);
+
+            // TODO: it would be nice to get the plugin stdout/stderr here
+            EndLifecyclePhase(metrics, sw);
+            return result;
+        }
+        catch (Exception e)
+        {
+            // TODO: it would be nice to get the plugin stdout/stderr here
+            EndLifecyclePhase(metrics, sw, FunctionLifecycle.Terminated);
+            Console.WriteLine(e);
+            return "";
+            //throw;
+        }
     }
 
     public void Configure()
