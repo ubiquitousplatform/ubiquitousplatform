@@ -1,5 +1,6 @@
 const { debug, ubiqDispatch } = Host.getFunctions();
 
+// TODO: override error, warn,
 console.log = (msg) => {
   let mem = Memory.fromString(msg);
   debug(mem.offset);
@@ -30,27 +31,47 @@ function registerFn(fn: Function) {
 
 const ubiqEcho = registerFn((input: string) => {
   try {
-    console.log("ubiqEcho called with input: ", input);
+    console.log("ubiqEcho called with input: " + input);
+    console.log("building message...");
     let msg = "Hello from js!";
     // TODO: build a byte array that has the full header and try to pass it over.
     let mem = Memory.fromString(msg);
+    console.log("message reference is stored in mem: " + mem.offset);
 
+    console.log("Calling ubiqDisaptch...");
     let offset = ubiqDispatch(mem.offset);
+    console.log("Call complete.  Parsing response..");
+    console.log("Response offset: " + offset);
     let response = Memory.find(offset).readString();
+    console.log("Response read: " + response);
     if (response != "myHostFunction1: " + msg) {
+      console.log("Response did not equal expected. throwing error.");
       throw Error(`wrong message came back from myHostFunction1: ${response}`);
     }
 
+    console.log("Trying another call using json...");
     let msg2 = { hello: "world!" };
     mem = Memory.fromJsonObject(msg2);
+    console.log("Object constructed at offset: " + mem.offset);
+    console.log("Calling ubiqDispatch...");
     offset = ubiqDispatch(mem.offset);
+    console.log("Call complete.  Parsing response..");
     let response2 = Memory.find(offset).readJsonObject();
+    console.log("Response read: " + JSON.stringify(response2));
     if (response2.hello != "myHostFunction2") {
+      console.log("Response did not equal expected. throwing error.");
       throw Error(`wrong message came back from myHostFunction2: ${response}`);
     }
     return "called host function!";
-  } catch (e) {
-    console.error("Error in ubiqEcho: ", e);
+  } catch (e: any) {
+    console.log(
+      "Error in ubiqEcho. Error: " +
+        JSON.stringify(e) +
+        "stack: " +
+        e.stack +
+        ", message: " +
+        e.message
+    );
     return "Error in ubiqEcho: " + e;
   }
   //Host.outputString(`Hello, World!`);
