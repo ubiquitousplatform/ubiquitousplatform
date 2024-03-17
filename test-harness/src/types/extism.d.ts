@@ -20,7 +20,7 @@ type memoryDescriptor = {
 
 declare namespace Memory {
   const fromString: (str: string) => memoryDescriptor; // allocates bytes in memory, returns offset into memory.
-  //const fromBytes: (bytes: ArrayBuffer) => string;
+  const fromBuffer: (bytes: ArrayBuffer) => memoryDescriptor;
   const find: (offset: number) => memoryDescriptor;
   const fromJsonObject: (obj: object) => memoryDescriptor;
   // fromBuffer
