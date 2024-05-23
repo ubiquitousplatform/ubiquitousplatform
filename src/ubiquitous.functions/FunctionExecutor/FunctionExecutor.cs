@@ -58,33 +58,10 @@ public class FunctionExecutor : IFunctionExecutor
         //var manifest = new Manifest(new PathWasmSource("test-harness.wasm", "test-harness"));
         // TODO: configurable timeout 
         manifest.Timeout = TimeSpan.FromSeconds(5);
+        // manifest.MemoryOptions = new MemoryOptions { MaxVarBytes = 0 };
         try
         {
-            _plugin = new Plugin(manifest, new[]
-            {
-                HostFunction.FromMethod<long, long>("ubiqDispatch", IntPtr.Zero,
-                    (plugin, x) =>
-                    {
-                        var c = (char)x;
-
-                        switch (char.ToLowerInvariant(c))
-                        {
-                            case 'a':
-                            case 'A':
-                            case 'e':
-                            case 'E':
-                            case 'i':
-                            case 'I':
-                            case 'o':
-                            case 'O':
-                            case 'u':
-                            case 'U':
-                                return 1;
-                        }
-
-                        return 0;
-                    })
-            }, true);
+            _plugin = new Plugin(manifest, _hostFunctions.ToArray(), true);
         }
         catch (Exception e)
         {
@@ -100,9 +77,22 @@ public class FunctionExecutor : IFunctionExecutor
     public string Call(string method, string input)
     {
         var (metrics, sw) = StartLifecyclePhase(FunctionLifecycle.Active, "Call");
-        var result = _plugin.Call(method, input);
-        EndLifecyclePhase(metrics, sw);
-        return result;
+        try
+        {
+            var result = _plugin.Call(method, input);
+
+            // TODO: it would be nice to get the plugin stdout/stderr here
+            EndLifecyclePhase(metrics, sw);
+            return result;
+        }
+        catch (Exception e)
+        {
+            // TODO: it would be nice to get the plugin stdout/stderr here
+            EndLifecyclePhase(metrics, sw, FunctionLifecycle.Terminated);
+            Console.WriteLine(e);
+            return "";
+            //throw;
+        }
     }
 
     public void Configure()
@@ -138,6 +128,12 @@ public class FunctionExecutor : IFunctionExecutor
             kvStore[key] = value.ToArray();
         })*/
         //throw new NotImplementedException();
+    }
+
+    public void RegisterHostFunction(string name, Action<CurrentPlugin, long> callback)
+    {
+        _hostFunctions.Add(
+            HostFunction.FromMethod(name, IntPtr.Zero, callback));
     }
 
     private void EndLifecyclePhase(ExecutionMetrics metrics, Stopwatch sw, FunctionLifecycle? destinationState = null)
