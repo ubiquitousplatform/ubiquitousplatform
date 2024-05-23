@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-          working-directory: ./host-functions-api/src
+          cache-dependency-path: ./host-functions-api/src
 
       - run: npm ci
       - run: npm run tsp install
