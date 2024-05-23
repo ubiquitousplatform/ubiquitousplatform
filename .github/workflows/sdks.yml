@@ -5,9 +5,9 @@ name: App SDKs
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   Build-OpenAPI-Spec:
@@ -16,13 +16,14 @@ jobs:
       run:
         working-directory: ./host-functions-api/src
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js 20
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-        cache: 'npm'
-        
-    - run: npm ci
-    - run: npm run tsp install
-    - run: npm run tsp compile .
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+          working-directory: ./host-functions-api/src
+
+      - run: npm ci
+      - run: npm run tsp install
+      - run: npm run tsp compile .
