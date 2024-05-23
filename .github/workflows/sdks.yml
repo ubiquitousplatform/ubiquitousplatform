@@ -62,3 +62,4 @@ jobs:
         with:
           name: ubiq-sdk-typescript
           path: ./sdk-output/ubiq-sdk-typescript/
+    needs: Build-OpenAPI-Spec
