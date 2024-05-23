@@ -9,12 +9,15 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  HOST_FUNCTIONS_API_PATH: ./host-functions-api/src
+
 jobs:
   Build-OpenAPI-Spec:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./host-functions-api/src
+        working-directory: ${{ env.HOST_FUNCTIONS_API_PATH }}
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20
@@ -22,22 +25,21 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-          cache-dependency-path: ./host-functions-api/src
+          cache-dependency-path: ${{ env.HOST_FUNCTIONS_API_PATH }}
 
       - run: npm ci
       - run: npm run tsp:compile
-
       - name: Archive OpenAPI Spec File
         uses: actions/upload-artifact@v4
         with:
           name: sdk.yaml
-          path: ./host-functions-api/src/tsp-output/sdk.yaml
+          path: ${{ env.HOST_FUNCTIONS_API_PATH }}/tsp-output/sdk.yaml
 
   Build-TypeScript-SDK:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./host-functions-api/src # needed so that the cache folder is correctly identified
+        working-directory: ${{ env.HOST_FUNCTIONS_API_PATH }} # needed so that the cache folder is correctly identified
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20
@@ -45,20 +47,20 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-          cache-dependency-path: ./host-functions-api/src
+          cache-dependency-path: ${{ env.HOST_FUNCTIONS_API_PATH }}
 
       - name: Download OpenAPI Spec
         uses: actions/download-artifact@v4
         with:
           name: sdk.yaml
-          path: ./host-functions-api/src/tsp-output/
+          path: ${{ env.HOST_FUNCTIONS_API_PATH }}/tsp-output/
 
       - run: npm ci
       - run: npm run sdk:compile-typescript
-
       - name: Archive TypeScript SDK
         uses: actions/upload-artifact@v4
         with:
           name: ubiq-sdk-typescript
-          path: ./sdk-output/ubiq-sdk-typescript/
+          path: ${{ env.HOST_FUNCTIONS_API_PATH }}/sdk-output/ubiq-sdk-typescript/
     needs: Build-OpenAPI-Spec
+    # TODO: test typescript SDK
