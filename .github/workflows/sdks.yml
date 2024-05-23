@@ -47,8 +47,6 @@ jobs:
           cache: "npm"
           cache-dependency-path: ./host-functions-api/src
 
-      - run: npm run tsp:compile
-
       - name: Download OpenAPI Spec
         uses: actions/download-artifact@v4
         with:
