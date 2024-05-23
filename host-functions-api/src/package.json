@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "tsp:compile": "tsp compile ."
+    "tsp:compile": "tsp compile . && mv tsp-output/@typespec/openapi3/openapi.yaml tsp-output/sdk.yaml"
   },
   "dependencies": {
     "@typespec/compiler": "latest",
