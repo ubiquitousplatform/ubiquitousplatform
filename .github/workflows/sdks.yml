@@ -47,7 +47,6 @@ jobs:
           cache: "npm"
           cache-dependency-path: ./host-functions-api/src
 
-      - run: npm ci
       - run: npm run tsp:compile
 
       - name: Download OpenAPI Spec
@@ -55,6 +54,8 @@ jobs:
         with:
           name: sdk.yaml
 
+      - run: mv sdk.yaml ./host-functions-api/src/tsp-output/sdk.yaml
+      - run: npm ci
       - run: npm run sdk:compile-typescript
 
       - name: Archive TypeScript SDK
