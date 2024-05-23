@@ -3,13 +3,17 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "tsp:compile": "tsp compile . && mv tsp-output/@typespec/openapi3/openapi.yaml tsp-output/sdk.yaml"
+    "tsp:compile": "tsp compile . && mv tsp-output/@typespec/openapi3/openapi.yaml tsp-output/sdk.yaml",
+    "sdk:compile-typescript": "openapi-generator-cli generate -g typescript-fetch -i sdk.yaml -o sdk-output/ubiq-sdk-typescript"
   },
   "dependencies": {
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
-    "@typespec/rest": "latest",
-    "@typespec/openapi3": "latest"
+    "@typespec/openapi3": "latest",
+    "@typespec/rest": "latest"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.4"
+  }
 }
