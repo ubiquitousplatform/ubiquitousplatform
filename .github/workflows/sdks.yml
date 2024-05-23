@@ -51,8 +51,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: sdk.yaml
+          path: ./host-functions-api/src/tsp-output/
 
-      - run: mv sdk.yaml ./host-functions-api/src/tsp-output/sdk.yaml
       - run: npm ci
       - run: npm run sdk:compile-typescript
 
