@@ -2,6 +2,9 @@
   "name": "ubiquitous-host-functions",
   "version": "0.1.0",
   "type": "module",
+  "scripts": {
+    "tsp:compile": "tsp compile ."
+  },
   "dependencies": {
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",

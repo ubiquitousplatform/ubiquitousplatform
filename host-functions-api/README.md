@@ -2,10 +2,9 @@
 
 ## 1. Build TypeSpec project to emit an OpenAPI Spec file
 
-1. Install typespec globally (see [TypeSpec Docs](https://typespec.io/docs)).
-2. cd to src/
-3. run `tsp install`
-4. run `tsp compile .`
+1. cd to src/
+2. run `npm i` to install typespec compiler, etc.
+3. run `npm run tsp:compile`
 
 
 Example typespec: https://github.com/connorjs/swapi-typespec/

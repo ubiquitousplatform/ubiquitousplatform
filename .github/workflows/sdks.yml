@@ -25,5 +25,4 @@ jobs:
           cache-dependency-path: ./host-functions-api/src
 
       - run: npm ci
-      - run: npm run tsp install
-      - run: npm run tsp compile .
+      - run: npm run tsp:compile
