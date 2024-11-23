@@ -64,3 +64,5 @@ jobs:
           path: ${{ env.HOST_FUNCTIONS_API_PATH }}/sdk-output/ubiq-sdk-typescript/
     needs: Build-OpenAPI-Spec
     # TODO: test typescript SDK
+    # TODO: wrap SDK with needed extism implementation wrapper
+# TODO: upload SDK to npm

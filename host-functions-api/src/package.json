@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "tsp:compile": "tsp compile . && mv tsp-output/@typespec/openapi3/openapi.yaml tsp-output/sdk.yaml",
-    "sdk:compile-typescript": "openapi-generator-cli generate -g typescript-fetch -i tsp-output/sdk.yaml -o sdk-output/ubiq-sdk-typescript"
+    "sdk:compile-typescript": "openapi-generator-cli generate -g typescript-fetch -i tsp-output/sdk.yaml -o sdk-output/ubiq-sdk-typescript",
+    "sdk:compile-openapi-fetch": "openapi-typescript tsp-output/sdk.yaml -o sdk-output/ubiq-sdk-openapi-fetch/ubiq.d.ts"
   },
   "dependencies": {
     "@typespec/compiler": "latest",
@@ -14,6 +15,8 @@
   },
   "private": true,
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.13.4"
+    "@openapitools/openapi-generator-cli": "^2.13.4",
+    "openapi-typescript": "^6.7.6",
+    "typescript": "^5.4.5"
   }
 }
