@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using Extism.Sdk;
+using System.Diagnostics;
 using ubiquitous.functions.FunctionExecutor;
 using ubiquitous.stdlib;
 
@@ -57,7 +57,7 @@ public class FunctionExecutor : IFunctionExecutor
                 new ByteArrayWasmSource(pluginBytes, "hello"));
         //var manifest = new Manifest(new PathWasmSource("test-harness.wasm", "test-harness"));
         // TODO: configurable timeout 
-        manifest.Timeout = TimeSpan.FromSeconds(5);
+        manifest.Timeout = TimeSpan.FromSeconds(500);
         // manifest.MemoryOptions = new MemoryOptions { MaxVarBytes = 0 };
         try
         {
