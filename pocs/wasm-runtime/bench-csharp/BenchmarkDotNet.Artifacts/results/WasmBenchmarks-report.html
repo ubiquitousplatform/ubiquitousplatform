@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>WasmBenchmarks-20260301-104434</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.12, macOS 26.3 (25D125) [Darwin 25.3.0]
+Apple M1 Pro, 1 CPU, 10 logical and 10 physical cores
+.NET SDK 10.0.101
+  [Host]     : .NET 8.0.2 (8.0.224.6711), Arm64 RyuJIT AdvSIMD
+  DefaultJob : .NET 8.0.2 (8.0.224.6711), Arm64 RyuJIT AdvSIMD
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method  </th><th>Mean  </th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>ColdStartNoop</td><td>2,986.773 &mu;s</td><td>27.9996 &mu;s</td><td>26.1909 &mu;s</td><td>1,310.77</td><td>12.47</td><td>304.6875</td><td>304.6875</td><td>109.3750</td><td>456915 B</td><td>7,139.30</td>
+</tr><tr><td>WarmNoop</td><td>2.281 &mu;s</td><td>0.0117 &mu;s</td><td>0.0103 &mu;s</td><td>1.00</td><td>0.00</td><td>0.0076</td><td>-</td><td>-</td><td>64 B</td><td>1.00</td>
+</tr><tr><td>WarmHostCall1</td><td>3.302 &mu;s</td><td>0.0205 &mu;s</td><td>0.0172 &mu;s</td><td>1.45</td><td>0.01</td><td>0.0191</td><td>-</td><td>-</td><td>128 B</td><td>2.00</td>
+</tr><tr><td>WarmHostCall10</td><td>13.100 &mu;s</td><td>0.1084 &mu;s</td><td>0.0961 &mu;s</td><td>5.74</td><td>0.04</td><td>0.1068</td><td>-</td><td>-</td><td>704 B</td><td>11.00</td>
+</tr></tbody></table>
+</body>
+</html>
