@@ -5,52 +5,53 @@
 
 ---
 
-## Results (Apple M1 Pro, 2026-03-01)
+## Results (Apple M1 Pro, 2026-03-01, verified round-trip protocol)
 
 ### Rust Host (`extism` crate + `criterion`)
 
 | Benchmark | Mean | Notes |
 |---|---|---|
-| **Cold start** (compile + instantiate + call) | **1,483 μs** | Module compilation dominates |
-| **Warm noop** (pure WASM call) | **2.43 μs** | Baseline — entering/exiting sandbox |
-| **Warm host_call_1** (1 host fn) | **3.27 μs** | 1 host function round-trip |
-| **Warm host_call_10** (10 host fns) | **9.00 μs** | 10 host function round-trips |
+| **Cold start** (compile + instantiate + call) | **1,586 μs** | Module compilation dominates |
+| **Warm noop** (guest math only) | **2.54 μs** | Baseline with deterministic guest compute |
+| **Warm host_call_1** (1 verified host fn) | **4.36 μs** | 1 host round-trip + request/response validation |
+| **Warm host_call_10** (10 verified host fns) | **20.25 μs** | 10 round-trips with host+guest compute each round |
 
 ### C# Host (`Extism.Sdk` + `BenchmarkDotNet`)
 
 | Benchmark | Mean | Allocated | Notes |
 |---|---|---|---|
-| **Cold start** (compile + instantiate + call) | **2,987 μs** | 457 KB | 2× Rust (GC + FFI setup) |
-| **Warm noop** (pure WASM call) | **2.28 μs** | 64 B | Baseline — nearly identical to Rust |
-| **Warm host_call_1** (1 host fn) | **3.30 μs** | 128 B | 1 host function round-trip |
-| **Warm host_call_10** (10 host fns) | **13.10 μs** | 704 B | 10 host function round-trips |
+| **Cold start** (compile + instantiate + call) | **3,176 μs** | 481 KB | ~2× Rust (GC + FFI setup) |
+| **Warm noop** (guest math only) | **2.40 μs** | 104 B | Baseline with deterministic guest compute |
+| **Warm host_call_1** (1 verified host fn) | **4.28 μs** | 632 B | 1 host round-trip + request/response validation |
+| **Warm host_call_10** (10 verified host fns) | **23.83 μs** | 5,328 B | 10 round-trips with host+guest compute each round |
 
 ### Derived: Per-Host-Call FFI Overhead
 
 ```
-Rust:  (9.00 − 2.43) / 10 = 0.66 μs per host function call
-C#:    (13.10 − 2.28) / 10 = 1.08 μs per host function call
+Rust:  (20.25 − 2.54) / 10 = 1.77 μs per verified host call
+C#:    (23.83 − 2.40) / 10 = 2.14 μs per verified host call
 ```
 
-**C# is 1.6× slower per host function call** due to the additional managed→native→WASM→native→managed
-boundary vs Rust's native→WASM→native path.
+**C# is ~1.21× slower per verified host call** due to the additional managed→native→WASM→native→managed
+boundary and higher managed allocation pressure.
 
 ### Key Takeaways
 
-1. **Warm invocation overhead is nearly identical** (2.28 μs C# vs 2.43 μs Rust).
+1. **Warm invocation baseline remains nearly identical** (2.40 μs C# vs 2.54 μs Rust)
    The WASM sandbox entry/exit cost dominates, not the host language.
 
-2. **Host function calls add ~0.66 μs (Rust) or ~1.08 μs (C#) each.**
-   For a function making 5 host calls, that's 3.3 μs (Rust) or 5.4 μs (C#) of FFI overhead —
-   negligible compared to any real work (network I/O, KV lookup, etc.).
+2. **Verified host function calls add ~1.77 μs (Rust) or ~2.14 μs (C#) each.**
+   This now includes boundary crossing + lightweight host/guest math + payload signature checks,
+   so it is a stricter and more trustworthy upper-bound than the previous echo-only micro-benchmark.
 
-3. **Cold start is 2× slower in C#** (2,987 μs vs 1,483 μs). This matters for the first
-   invocation but not for warmed pools. The C# cold start also allocates 457 KB of managed memory.
+3. **Cold start is still about 2× slower in C#** (3,176 μs vs 1,586 μs). This matters for the first
+   invocation but not for warmed pools. The C# cold start also allocates 481 KB of managed memory.
 
-4. **C# allocates 64 B per warm call** (Extism SDK managed wrappers).
+4. **C# allocates 104 B per warm noop and 5.3 KB per 10-host-call benchmark** due to managed wrappers
+   and string payload handling in the verified protocol.
    Gen0 collections are light and won't cause GC pauses at this allocation rate.
 
-5. **The FFI overhead is NOT a blocker for C#.** A 0.42 μs difference per host call
+5. **The host-language delta remains small in absolute terms.** A ~0.37 μs difference per verified call
    is dwarfed by any real host function work (KV store lookup: ~10-100 μs,
    HTTP call: ~1-100 ms). The ecosystem advantages of C# (Garnet, SignalR, Aspire)
    far outweigh this micro-overhead.
@@ -80,8 +81,13 @@ round-trips on top. The difference isolates the FFI boundary crossing cost.
 Using 10 calls per iteration amplifies the signal above measurement noise
 (criterion's timer resolution is ~1 ns).
 
-The host function itself is a trivial echo (read input bytes → write them back),
-so host-side execution time is negligible vs the boundary crossing cost.
+In this revised benchmark, the host callback is intentionally **not** a pure echo:
+- guest sends `round,value,tag`
+- host validates tag, performs deterministic math, returns `round,newValue,tag`
+- guest validates host tag before continuing
+
+This proves data is crossing both directions correctly and that both sides execute compute.
+So the result is no longer "raw boundary only"; it is "boundary + lightweight verified work".
 
 ---
 
@@ -112,12 +118,13 @@ Three exported functions, all using the Extism PDK:
 
 | Function | Behavior | Purpose |
 |---|---|---|
-| `noop` | Echo input → output | Baseline (0 host calls) |
-| `host_call_1` | Call `host_kv_get` once | 1 host call overhead |
-| `host_call_10` | Call `host_kv_get` 10× | 10 host calls (amplifies signal) |
+| `noop` | Runs deterministic guest-only math | Baseline (0 host calls) |
+| `host_call_1` | 1 verified round-trip guest→host→guest | 1 host call overhead with validation |
+| `host_call_10` | 10 verified round-trips | 10 host calls (amplifies signal) |
 
-The guest declares a host function import `host_kv_get(String) → String` which
-the host must provide. Both benchmarks register this as a trivial echo.
+The guest declares a host function import `host_kv_get(String) → String`.
+Both benchmarks register a host callback that validates request signatures,
+applies deterministic host math, and signs responses.
 
 ---
 
