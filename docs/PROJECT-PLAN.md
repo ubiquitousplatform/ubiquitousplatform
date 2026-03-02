@@ -13,15 +13,12 @@ Ubiquitous is a **serverless framework and runtime** that makes building, testin
 ## Current State Assessment
 
 ### What Exists Today
-- Two parallel WASM execution engines (Wasmtime-direct + Extism-based)
-- Object pool with checkout/checkin semantics and auto-scaling (10–1000 instances)
-- Host ↔ Guest IPC protocol via `invoke_json`
-- Basic ASP.NET Core API host with a `/hello_world` endpoint
+- **Extism-based execution engine** (single, chosen) with object pool, checkout/checkin, auto-scaling (10–1000 instances)
+- ASP.NET Core API host with routing
 - TypeScript/JavaScript → WASM compilation pipeline (esbuild → extism-js)
 - Test harness executing inside WASM
 - Lifecycle state machine for function execution
-- Performance benchmarks comparing runtime approaches
-- Early Rust prototype (not functional)
+- Performance benchmarks (C# Extism.NET validated against Rust baselines)
 - Bruno API collection for testing
 - Host functions API defined in TypeSpec (KV store)
 
@@ -39,23 +36,22 @@ Ubiquitous is a **serverless framework and runtime** that makes building, testin
 
 ---
 
-## Phase 0: Foundation & Decision Making (Weeks 1–2)
+## Phase 0: Foundation & Decision Making ~~(Weeks 1–2)~~ ✅ COMPLETE
 
 ### Goal
 Lock in key architectural decisions before building.
 
-### 0.1 — Runtime Language Decision
-- [ ] Benchmark: C# (Wasmtime.NET / Extism.NET) vs Rust (wasmtime / extism) vs Go (wazero / extism-go)
-- [ ] Measure: cold start time, warm invocation latency, memory per instance, max concurrent instances
-- [ ] Measure: compile-from-source time for each host language
-- [ ] Decision criteria: startup speed, memory efficiency, cross-platform binary distribution, ecosystem maturity
-- [ ] **Deliverable**: Decision document with benchmarks
+### ~~0.1 — Runtime Language Decision~~ ✅ DECIDED: C# with Extism.NET
+- [x] Benchmarked C# (Extism.NET) vs Rust (extism crate + wasmtime crate)
+- [x] Measured warm invocation latency and host function round-trip overhead
+- [x] Evaluated host function ecosystem (Garnet, Aspire, SignalR, HangFire)
+- [x] **Decision**: C# — FFI overhead acceptable; host ecosystem (Garnet, Aspire) has no Rust equivalent
+- [x] **Deliverable**: [RUNTIME-LANGUAGE-DECISION.md](RUNTIME-LANGUAGE-DECISION.md)
 
-### 0.2 — WASM Execution Engine Unification
-- [ ] Choose one engine: Wasmtime-direct or Extism SDK (see [QUESTIONS.md](QUESTIONS.md))
-- [ ] Extism provides: host function registration, plugin lifecycle, memory management, multi-language PDK
-- [ ] Wasmtime-direct provides: lower-level control, custom IPC, module linking
-- [ ] **Deliverable**: Single execution path, other removed
+### ~~0.2 — WASM Execution Engine Unification~~ ✅ DECIDED: Extism SDK only
+- [x] Extism chosen: multi-language PDK, managed lifecycle, <5μs overhead over raw Wasmtime
+- [x] Wasmtime-direct path removed from codebase
+- [x] **Deliverable**: Single Extism execution path; [MODULE-EXECUTION-ENGINE.md](MODULE-EXECUTION-ENGINE.md) updated
 
 ### 0.3 — Function Manifest Format
 - [ ] Design the `ubiq.toml` / `ubiq.yaml` manifest format

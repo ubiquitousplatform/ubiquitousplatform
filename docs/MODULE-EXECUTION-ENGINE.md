@@ -17,30 +17,16 @@ The execution engine is responsible for:
 
 ## Current State
 
-Two parallel implementations exist:
-
-### Wasmtime-Direct (FunctionPool + WasmRuntime)
-- Lower-level, custom IPC via `invoke_json`
-- Two-module architecture (QuickJS runtime + user code)
-- Object pool with auto-scaling
-- More control, more complexity
-
-### Extism SDK (FunctionExecutor)
-- Higher-level, lifecycle state machine
+**Extism SDK (`FunctionExecutor`)** is the single execution engine:
+- Higher-level plugin lifecycle state machine
 - Built-in host function registration
 - Plugin management abstraction
-- Multi-language PDK support (JS, Rust, Go, Python, C, Haskell, Zig)
+- Multi-language PDK support (TypeScript/JS, Rust, Go, Python, C#, C, Haskell, Zig, AssemblyScript)
+- Memory management (input/output) handled by the framework
+- Module-scoped variable storage between calls
+- Extism wraps Wasmtime internally — same execution performance, dramatically better DX
 
-### Recommendation
-**Extism SDK** should be the primary engine because:
-- Multi-language PDK is essential for polyglot support
-- Host function registration is cleaner
-- Plugin lifecycle management is built in
-- Memory management (input/output) is handled
-- Active development and community
-- Still uses Wasmtime under the hood (so same performance)
-
-The Wasmtime-direct path should be kept as a fallback for cases where lower-level control is needed (e.g., custom module linking, advanced memory management).
+Decision rationale: [RUNTIME-LANGUAGE-DECISION.md](RUNTIME-LANGUAGE-DECISION.md)
 
 ---
 
@@ -93,7 +79,7 @@ On checkin, the instance is reset:
 
 Guest WASM functions communicate with the host via host functions. The protocol:
 
-### Extism Path (Recommended)
+### Extism Host Function Protocol
 ```
 Guest calls: Host.getFunctions() → registered host functions
 Guest reads input: Host.inputString() / Host.inputBytes()
@@ -101,12 +87,9 @@ Guest writes output: Host.outputString(data) / Host.outputBytes(data)
 Guest calls host function: hostFnName(inputPtr, inputLen) → response
 ```
 
-### Current `invoke_json` Path (Wasmtime-Direct)
-```
-Guest calls: invoke_json(ptr, len)
-Host reads: { "action": "kv.get", "payload": { "key": "foo" } }
-Host responds: writes JSON to guest memory via guest_malloc
-```
+Host functions are registered on the C# side using `HostFunction` objects with the Extism.NET SDK.
+The guest invokes them via the Extism PDK for whichever language it is written in.
+Serialization between host and guest uses MessagePack (via the Ubiquitous SDK shim — see SDK versioning docs).
 
 ### Planned Host Functions
 
@@ -144,9 +127,9 @@ Every WASM execution is bounded:
 | **File storage quota** | 100 MB | Per-function |
 
 ### Enforcement
-- **CPU time**: Wasmtime fuel/epoch mechanism
-- **Memory**: WASM linear memory max pages
-- **Timeout**: Host-side timer, kills execution on expiry
+- **CPU time**: Extism `CompiledPlugin` fuel limits (backed by Wasmtime's epoch/fuel mechanism)
+- **Memory**: WASM linear memory max pages configured on the Extism manifest
+- **Timeout**: Host-side timer via `CancellationToken`, kills execution on expiry
 - **I/O sizes**: Validated in host functions before processing
 
 ---

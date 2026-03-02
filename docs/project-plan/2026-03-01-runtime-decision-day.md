@@ -4,6 +4,28 @@
 
 ---
 
+## Outcomes (End of Day)
+
+All three decisions are now resolved. See [RUNTIME-LANGUAGE-DECISION.md](../RUNTIME-LANGUAGE-DECISION.md) for the authoritative record.
+
+| Decision | Outcome |
+|----------|---------|
+| **Runtime language** | **C# (.NET 8)** — Extism.NET FFI overhead is acceptable (<10μs); Garnet + Aspire have no Rust equivalent and are the stronger differentiators |
+| **WASM engine** | **Extism SDK only** — Wasmtime-direct path removed; Extism adds <5μs per call over raw Wasmtime; PDK ecosystem is the decisive factor |
+| **Component Model** | **Not now** — adopted Extism's plain-WASM model; host function contracts are designed to map to WIT when maturity improves |
+
+### Codebase changes from this decision
+- Removed: `src/Wasmtime/` (C# Wasmtime examples project)
+- Removed: `pocs/wasm-runtime/bench-rust/` (Rust runtime benchmark)
+- Removed: `rust/ubiquitous-functions/` (Rust host prototype)
+- Removed: `src/BenchmarkWasmRuntimes/WasmtimeDotNet.cs` (Wasmtime bench stub)
+- Kept: `pocs/wasm-runtime/bench-csharp/` (C# Extism benchmark — the validated baseline)
+- Kept: `pocs/wasm-runtime/guest-rust/` (Rust guest code that compiles to .wasm test fixtures)
+
+---
+
+---
+
 ## Executive Summary
 
 Today we resolve three blocking questions that everything else hinges on:

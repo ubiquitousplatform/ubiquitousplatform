@@ -132,7 +132,7 @@ ubiq CLI
         ├── Router
         ├── Middleware Engine
         ├── Function Pool
-        │     └── WASM Engine (Wasmtime or Extism)
+        │     └── WASM Engine (Extism.NET → Wasmtime)
         ├── Host Functions
         │     ├── KV Store
         │     ├── File Storage
